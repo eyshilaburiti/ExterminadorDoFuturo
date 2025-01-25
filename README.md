@@ -5,14 +5,17 @@ Uma implementação baseada no board game that time you killed me.
 1. Instale e assegure-se de que o stack está funcionando em sua máquina.
 2. Clone este repositório em sua máquina.
 ```
-git clone ...
+git clone https://github.com/eyshilaburiti/ExterminadorDoFuturo
 ```
-3. Compile o projeto no diretório raiz
+3. Entre no diretório do projeto
 ```
-cd ...
+cd ExterminadorDoFuturo
+```
+4. Compile o projeto
+```
 stack build
 ```
-4. Rode o projeto
+5. Rode o projeto
 ```
 stack run
 ```
