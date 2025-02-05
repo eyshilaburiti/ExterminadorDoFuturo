@@ -1,18 +1,7 @@
 module Utils.Jogo (jogar) where
+import System.IO (hFlush, stdout)
+import Text.Read (readMaybe)
 import Utils.Tabuleiro
-
--- Solicitar jogada do jogador
-obterJogada :: IO (Int, Int)
-obterJogada = do
-    putStrLn "Digite a linha (1 a 4):"
-    linha <- readLn
-    putStrLn "Digite a coluna (1 a 4):"
-    coluna <- readLn
-    if linha > 0 && linha <= 4 && coluna > 0 && coluna <= 4
-        then return (linha -1 , coluna -1)
-        else do
-            putStrLn "Posição inválida! Tente novamente."
-            obterJogada
 
 -- Loop do jogo, alternando entre os jogadores
 jogar :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> IO ()
@@ -47,12 +36,37 @@ jogar tPassado tPresente tFuturo jogadorAtual = do
             let proximoJogador = if jogadorAtual == jogador1 then jogador2 else jogador1
             jogar novoTPassado novoTPresente novoTFuturo proximoJogador
 
+-- Solicitar jogada do jogador
+obterJogada :: IO (Int, Int)
+obterJogada = do
+    linha <- obterPosicao "Digite a linha (1 a 4): "
+    coluna <- obterPosicao "Digite a coluna (1 a 4): "
+    return (linha, coluna)
+    
+-- Função para obter um número válido dentro de um intervalo específico
+obterPosicao :: String -> IO Int
+obterPosicao mensagem = do
+    putStr mensagem
+    hFlush stdout
+    posicao <- getLine
+    case readMaybe posicao :: Maybe Int of
+        Just n ->
+            if n > 0 && n <= 4
+                then return (n - 1)
+            else do
+                putStrLn "Posição inválida! Tente novamente."
+                obterPosicao mensagem
+        Nothing -> do
+            putStrLn "Entrada inválida!"
+            obterPosicao mensagem
 
 -- Função que define o foco do jogador
 definirFoco :: IO String 
 definirFoco = do
-    putStrLn "Escolha o foco para a próxima rodada (passado, presente, futuro): "
+    putStr "Escolha o foco para a próxima rodada (passado, presente, futuro): "
+    hFlush stdout
     foco <- getLine
+
     if foco == "passado"
         then return foco
     else if foco == "presente"
