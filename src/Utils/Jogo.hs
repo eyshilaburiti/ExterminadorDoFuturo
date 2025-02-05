@@ -1,4 +1,5 @@
 module Utils.Jogo (jogar) where
+import Utils.Tabuleiro
 
 -- Solicitar jogada do jogador
 obterJogada :: IO (Int, Int)
