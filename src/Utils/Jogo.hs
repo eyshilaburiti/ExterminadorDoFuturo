@@ -1,7 +1,15 @@
-module Utils.Jogo (jogar) where
+module Utils.Jogo (iniciarTabuleiro) where
+
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
 import Utils.Tabuleiro
+
+iniciarTabuleiro :: IO ()
+iniciarTabuleiro = do
+    let tabuleiroPassado = tabuleiro4x4
+    let tabuleiroPresente = tabuleiro4x4
+    let tabuleiroFuturo = tabuleiro4x4
+    jogar tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador1
 
 -- Loop do jogo, alternando entre os jogadores
 jogar :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> IO ()
