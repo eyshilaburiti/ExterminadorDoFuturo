@@ -21,6 +21,7 @@ jogar tPassado tPresente tFuturo jogadorAtual = do
     foco <- definirFoco
     (linha, coluna) <- obterJogada
 
+    --usar guardas
     let tabuleiroSelecionado = case foco of
             "passado" -> tPassado
             "presente" -> tPresente
@@ -28,7 +29,7 @@ jogar tPassado tPresente tFuturo jogadorAtual = do
             _ -> tPresente -- fallback para evitar erros
 
     -- Verifica se a posição já está ocupada
-    if (tabuleiroSelecionado !! linha !! coluna) /= "\x25A1"
+    if (tabuleiroSelecionado !! linha !! coluna) /= "\x25A1" -- criar função pra especificar qual o emoji
         then do
             putStrLn "Posição já ocupada! Escolha outra."
             jogar tPassado tPresente tFuturo jogadorAtual
