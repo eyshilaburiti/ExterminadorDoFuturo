@@ -20,7 +20,7 @@ formatarTabuleiro tabuleiro =
     -- definindo as bordas
         bordaSuperior = replicate (tamanho * 2 + 1) '_'  
         bordaInferior = replicate (tamanho * 2 + 1) '¯' 
-        bordaLateral = map (\linha -> "| " ++ unwords linha ++ " |") tabuleiro
+        bordaLateral = map (\linha -> "|" ++ unwords linha ++ "|") tabuleiro
     in bordaSuperior : bordaLateral ++ [bordaInferior]-- juntando as bordas
 
 -- Função para imprimir os 3 tabuleiros
