@@ -83,12 +83,11 @@ movimentoValido (linhaAntiga, colunaAntiga) (linhaNova, colunaNova) = -- posicao
 
 
 -- Encontra a posição atual da peça do jogador no tabuleiro
-acharJogador :: String -> Tabuleiro -> Maybe (Int, Int) -- o símbolo do jogador; a matriz do tabuleiro; Just (linha, coluna), se a peça do jogador for encontrada ou Nothing, se a peça do jogador não estiver no tabuleiro.
-acharJogador jogador tabuleiro = -- Utiliza list comprehension para encontrar a posição da peça do jogador no tabuleiro.
+acharJogador :: String -> Tabuleiro -> Maybe (Int, Int) 
+acharJogador jogador tabuleiro = 
     let posicoes = [(linha, coluna) | (linha, linhaVals) <- zip [0,1,2,3] tabuleiro, -- Associa cada linha do tabuleiro ao seu índice (0, 1, 2, 3).
                                       (coluna, valor) <- zip [0,1,2,3] linhaVals, -- Associa cada coluna ao seu índice dentro da linha. 
                                       valor == jogador]-- Filtra apenas as posições onde o símbolo do jogador está.
     in if null posicoes then Nothing else Just (head posicoes)
     --null posicoes verifica se a lista de posições está vazia:
-    -- Se sim, retorna Nothing, indicando que o jogador não foi encontrado.
---Se não, retorna Just (head posicoes), pegando a primeira posição encontrada.
+    -- se tiver vazia: retorna Nothing (o jogador não foi encontrado) se n tiver: retorna Just (head posicoes), pegando a primeira posição encontrada.
