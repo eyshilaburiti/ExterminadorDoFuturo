@@ -1,17 +1,19 @@
 module Utils.Jogo (iniciarTabuleiro) where
-
+ 
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
 import Utils.Tabuleiro
 
 iniciarTabuleiro :: IO ()
 iniciarTabuleiro = do
-    let tabuleiroPassado = tabuleiro4x4
-    let tabuleiroPresente = tabuleiro4x4
-    let tabuleiroFuturo = tabuleiro4x4
+    let tabuleiroPassado = inicializarTabuleiro
+    let tabuleiroPresente = inicializarTabuleiro
+    let tabuleiroFuturo = inicializarTabuleiro
     jogar tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador1
 
--- Loop do jogo, alternando entre os jogadores
+
+
+{- Loop do jogo, alternando entre os jogadores
 jogar :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> IO ()
 jogar tPassado tPresente tFuturo jogadorAtual = do
     putStrLn "\nTabuleiros atuais:"
@@ -28,22 +30,67 @@ jogar tPassado tPresente tFuturo jogadorAtual = do
             "futuro" -> tFuturo
             _ -> tPresente -- fallback para evitar erros
 
-    -- Verifica se a posição já está ocupada
-    if (tabuleiroSelecionado !! linha !! coluna) /= "\x25A1" -- criar função pra especificar qual o emoji
-        then do
-            putStrLn "Posição já ocupada! Escolha outra."
+    let posicaoAtual = acharJogador jogadorAtual tabuleiroSelecionado
+
+    case posicaoAtual of
+        Just (linhaAntiga, colunaAntiga) ->
+            if movimentoValido (linhaAntiga, colunaAntiga) (linha, coluna) then do
+                let novoTabuleiro = atualizarTabuleiro tabuleiroSelecionado linhaAntiga colunaAntiga linha coluna jogadorAtual
+                let (novoTPassado, novoTPresente, novoTFuturo) = case foco of
+                        "passado"  -> (novoTabuleiro, tPresente, tFuturo)
+                        "presente" -> (tPassado, novoTabuleiro, tFuturo)
+                        "futuro"   -> (tPassado, tPresente, novoTabuleiro)
+                        _          -> (tPassado, tPresente, tFuturo)
+
+                let proximoJogador = if jogadorAtual == jogador1 then jogador2 else jogador1
+                jogar novoTPassado novoTPresente novoTFuturo proximoJogador
+            else do
+                putStrLn "Movimento inválido! Você só pode se mover uma casa na horizontal ou na vertical."
+                jogar tPassado tPresente tFuturo jogadorAtual
+        Nothing -> do
+            putStrLn "Erro: Jogador não encontrado!"
             jogar tPassado tPresente tFuturo jogadorAtual
-        else do
-            let novoTabuleiro = atualizarTabuleiro tabuleiroSelecionado linha coluna jogadorAtual
+-}
 
-            let (novoTPassado, novoTPresente, novoTFuturo) = case foco of
-                    "passado"  -> (novoTabuleiro, tPresente, tFuturo)
-                    "presente" -> (tPassado, novoTabuleiro, tFuturo)
-                    "futuro"   -> (tPassado, tPresente, novoTabuleiro)
-                    _          -> (tPassado, tPresente, tFuturo)
+-- Loop do jogo, alternando entre os jogadores
+jogar :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> IO ()
+jogar tPassado tPresente tFuturo jogadorAtual = do
+    putStrLn "\nTabuleiros atuais:"
+    imprimirTabuleiros tPassado tPresente tFuturo
 
-            let proximoJogador = if jogadorAtual == jogador1 then jogador2 else jogador1
-            jogar novoTPassado novoTPresente novoTFuturo proximoJogador
+    putStrLn $ "\nVez do jogador: " ++ jogadorAtual
+    foco <- definirFoco
+    (linha, coluna) <- obterJogada
+
+    -- usar guardas
+    let tabuleiroSelecionado
+          | foco == "passado"  = tPassado
+          | foco == "presente" = tPresente
+          | foco == "futuro"   = tFuturo
+          | otherwise          = tPresente -- fallback para evitar erros
+
+    let posicaoAtual = acharJogador jogadorAtual tabuleiroSelecionado
+
+    case posicaoAtual of
+        Just (linhaAntiga, colunaAntiga) ->
+            if movimentoValido (linhaAntiga, colunaAntiga) (linha, coluna) then do
+                let novoTabuleiro = atualizarTabuleiro tabuleiroSelecionado linhaAntiga colunaAntiga linha coluna jogadorAtual
+                
+                let (novoTPassado, novoTPresente, novoTFuturo)
+                      | foco == "passado"  = (novoTabuleiro, tPresente, tFuturo)
+                      | foco == "presente" = (tPassado, novoTabuleiro, tFuturo)
+                      | foco == "futuro"   = (tPassado, tPresente, novoTabuleiro)
+                      | otherwise          = (tPassado, tPresente, tFuturo)
+
+                let proximoJogador = if jogadorAtual == jogador1 then jogador2 else jogador1
+                jogar novoTPassado novoTPresente novoTFuturo proximoJogador
+            else do
+                putStrLn "Movimento inválido! Você só pode se mover uma casa na horizontal ou na vertical."
+                jogar tPassado tPresente tFuturo jogadorAtual
+        Nothing -> do
+            putStrLn "Erro: Jogador não encontrado!"
+            jogar tPassado tPresente tFuturo jogadorAtual
+
 
 -- Solicitar jogada do jogador
 obterJogada :: IO (Int, Int)
@@ -51,7 +98,7 @@ obterJogada = do
     linha <- obterPosicao "Digite a linha (1 a 4): "
     coluna <- obterPosicao "Digite a coluna (1 a 4): "
     return (linha, coluna)
-    
+   
 -- Função para obter um número válido dentro de um intervalo específico
 obterPosicao :: String -> IO Int
 obterPosicao mensagem = do
