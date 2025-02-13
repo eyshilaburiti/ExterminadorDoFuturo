@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Utils.Jogo
+import Jogo.Jogo (iniciarTabuleiro)
 
 main :: IO ()
 main = do

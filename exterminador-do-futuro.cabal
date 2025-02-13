@@ -25,8 +25,11 @@ source-repository head
 
 library
   exposed-modules:
-      Utils.Jogo
-      Utils.Tabuleiro
+      Interface.Jogador
+      Jogo.Jogo
+      Jogo.MovimentarPeca
+      Jogo.Tabuleiro
+      Utils.ImprimirTxt
   other-modules:
       Paths_exterminador_do_futuro
   autogen-modules:

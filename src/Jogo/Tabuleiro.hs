@@ -1,4 +1,4 @@
-module Utils.Tabuleiro  (Tabuleiro, imprimirTabuleiros, atualizarTabuleiro, jogador1, jogador2, tabuleiro4x4, inicializarTabuleiro, movimentoValido,acharJogador, semente, arbusto, arvore, plantarSementeNoTabuleiro) where
+module Jogo.Tabuleiro where
 
 -- Criando o tabuleiro 
 type Tabuleiro = [[String]]
@@ -13,6 +13,12 @@ jogador1 = "\x1F98A"
 jogador2 :: String
 jogador2 = "\x1F407"
 
+focoJogador1 :: String
+focoJogador1 = "passado"
+
+focoJogador2 :: String
+focoJogador2 = "futuro"
+
 semente :: String 
 semente = "\x1F330"
 
@@ -22,16 +28,17 @@ arbusto = "\x1F331"
 arvore :: String
 arvore = "\x1F333"
 
-
 -- Função para formatar o tabuleiro como uma String 
+-- Stefane: Atualização na função, removi os delimitadores laterais 
 formatarTabuleiro :: Tabuleiro -> [String]
-formatarTabuleiro tabuleiro = 
-    let tamanho = length tabuleiro
+formatarTabuleiro tabuleiro = map (\linha -> "|" ++ unwords linha ++ "|") tabuleiro
+--formatarTabuleiro tabuleiro = 
+    --let tamanho = length tabuleiro
     -- definindo as bordas
-        bordaSuperior = replicate (tamanho * 2 + 1) '_'  
-        bordaInferior = replicate (tamanho * 2 + 1) '¯' 
-        bordaLateral = map (\linha -> "|" ++ unwords linha ++ "|") tabuleiro
-    in bordaSuperior : bordaLateral ++ [bordaInferior]-- juntando as bordas
+        --bordaSuperior = replicate (tamanho * 2 + 1) '_'  
+        --bordaInferior = replicate (tamanho * 2 + 1) '¯' 
+        --bordaLateral = map (\linha -> "|" ++ unwords linha ++ "|") tabuleiro
+    --in bordaSuperior : bordaLateral ++ [bordaInferior]-- juntando as bordas
 
 -- Função para imprimir os 3 tabuleiros
 imprimirTabuleiros :: Tabuleiro -> Tabuleiro -> Tabuleiro -> IO ()
@@ -69,7 +76,6 @@ movimentoValido (linhaAntiga, colunaAntiga) (linhaNova, colunaNova) = -- posicao
         difColuna = abs (colunaNova - colunaAntiga)
     in (difLinha == 1 && difColuna == 0) || (difLinha == 0 && difColuna == 1)
 
-
 -- Encontra a posição atual da peça do jogador no tabuleiro
 acharJogador :: String -> Tabuleiro -> Maybe (Int, Int) 
 acharJogador jogador tabuleiro = 
@@ -82,3 +88,13 @@ acharJogador jogador tabuleiro =
 plantarSementeNoTabuleiro :: Tabuleiro -> Int -> Int -> String -> Tabuleiro
 plantarSementeNoTabuleiro tabuleiro linha coluna planta=
     take linha tabuleiro ++ [take coluna (tabuleiro !! linha) ++ [planta] ++ drop (coluna + 1) (tabuleiro !! linha)] ++ drop (linha + 1) tabuleiro
+
+contarPecas :: String -> Tabuleiro -> Int
+contarPecas jogador tabuleiro = 
+    length [(linha, coluna) | (linha, linhaVals) <- zip [0..] tabuleiro,
+                              (coluna, valor) <- zip [0..] linhaVals,
+                              valor == jogador]
+
+verificarJogadorTabuleiro :: String -> Tabuleiro -> Bool
+verificarJogadorTabuleiro jogador tabuleiro =
+    any (any (== jogador)) tabuleiro
