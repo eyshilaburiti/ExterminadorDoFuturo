@@ -60,13 +60,7 @@ definirFoco caminhoArquivo focoAnterior = do
     hFlush stdout
     foco <- getLine
 
-    if foco == "passado" && focoAnterior == "futuro" then do
-        putStrLn "Lembre-se que não podemos ir direto do futuro para o passado!!"
-        definirFoco caminhoArquivo focoAnterior
-    else if foco == "futuro" && focoAnterior == "passado" then do
-        putStrLn "Lembre-se que não podemos ir direto do passado para o futuro!!"
-        definirFoco caminhoArquivo focoAnterior
-    else if foco == "passado"
+    if foco == "passado"
         then return foco
     else if foco == "presente"
         then return foco
