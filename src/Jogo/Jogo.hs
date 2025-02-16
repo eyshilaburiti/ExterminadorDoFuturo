@@ -5,7 +5,7 @@ import Interface.Jogador (obterJogada, definirFoco, escolherJogada)
 import Jogo.MovimentarPeca (movimentarPeca)
 import Jogo.ViagemTempo(defineViagem, posicaoLivre, viagem)
 
-iniciarTabuleiro :: IO ()
+iniciarTabuleiro :: IO () 
 iniciarTabuleiro = do
     let tabuleiro1 = inicializarTabuleiro tabuleiro4x4 0 0 jogador1
     let tabuleiro = inicializarTabuleiro tabuleiro1 3 3 jogador2
@@ -83,7 +83,7 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones = do
                         
                         "m" -> do
                             (linhaDestino, colunaDestino) <- obterJogada "Coordenadas de Destino: "
-                            if movimentoValido (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino)
+                            if movimentoValido tabuleiroSelecionado (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino) 
                                 then do
                                     (novoTPassado, novoTPresente, novoTFuturo) <- 
                                         movimentarPeca tabuleiroSelecionado tPassado tPresente tFuturo jogadorAtual foco linhaOrigem colunaOrigem linhaDestino colunaDestino
