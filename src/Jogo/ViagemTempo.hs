@@ -41,7 +41,7 @@ defineViagem caminhoArquivo tempoAtual clones = do
     else if (tempoAtual == "passado" && novoTempo == "presente") ||  (tempoAtual == "presente" && novoTempo == "futuro")
         then return novoTempo
     else if (tempoAtual == "presente" && novoTempo == "passado") || (tempoAtual == "futuro" && novoTempo == "presente") then do
-        if clones < 4 then return novoTempo
+        if clones < 3 then return novoTempo
         else do
             putStr "Não é possível viajar para o passado, pois a quantidade máxima de clones (4), já foi excedida"
             return "viagem impossível"

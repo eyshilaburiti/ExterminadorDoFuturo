@@ -3,21 +3,23 @@ module Interface.Jogador where
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
 import Utils.ImprimirTxt (imprimirTxt)
+import Data.Char (toLower)  -- Importa a função toLower para converter caracteres para minúscula
 
 escolherJogada :: IO String
 escolherJogada = do 
     imprimirTxt "src/Interface/menu.txt"
     hFlush stdout
     escolha <- getLine
-    if escolha == "m" then do
-        return escolha
-    else if escolha == "p" then do
-        return escolha
-    else if escolha == "v" then do
-        return escolha
+    let escolhaMinuscula = map toLower escolha  -- Converte a entrada para minúscula
+    if escolhaMinuscula == "m" then do
+        return escolhaMinuscula
+    else if escolhaMinuscula == "p" then do
+        return escolhaMinuscula
+    else if escolhaMinuscula == "v" then do
+        return escolhaMinuscula
     else do 
         putStrLn "Entrada inválida!"
-        escolherJogada
+        escolherJogada  
 
 -- Solicitar jogada do jogador
 obterJogada :: String -> IO (Int, Int)
