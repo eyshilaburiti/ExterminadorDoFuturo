@@ -86,7 +86,7 @@ acharJogador jogador tabuleiro =
     --null posicoes verifica se a lista de posições está vazia:
     -- se tiver vazia: retorna Nothing (o jogador não foi encontrado) se n tiver: retorna Just (head posicoes), pegando a primeira posição encontrada.
 plantarSementeNoTabuleiro :: Tabuleiro -> Int -> Int -> String -> Tabuleiro
-plantarSementeNoTabuleiro tabuleiro linha coluna planta=
+plantarSementeNoTabuleiro tabuleiro linha coluna planta =
     take linha tabuleiro ++ [take coluna (tabuleiro !! linha) ++ [planta] ++ drop (coluna + 1) (tabuleiro !! linha)] ++ drop (linha + 1) tabuleiro
 
 contarPecas :: String -> Tabuleiro -> Int

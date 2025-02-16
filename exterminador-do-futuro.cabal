@@ -28,6 +28,7 @@ library
       Interface.Jogador
       Jogo.Jogo
       Jogo.MovimentarPeca
+      Jogo.PlantarSemente
       Jogo.Tabuleiro
       Utils.ImprimirTxt
   other-modules:

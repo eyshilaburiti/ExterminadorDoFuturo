@@ -3,6 +3,7 @@ module Jogo.Jogo where
 import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabuleiro4x4, inicializarTabuleiro, movimentoValido, verificarJogadorTabuleiro)
 import Interface.Jogador (obterJogada, definirFoco, escolherJogada)
 import Jogo.MovimentarPeca (movimentarPeca)
+import Jogo.PlantarSemente (plantarSemente)
 
 iniciarTabuleiro :: IO ()
 iniciarTabuleiro = do
@@ -67,7 +68,7 @@ jogar tPassado tPresente tFuturo jogadorAtual foco = do
                             movimentarPeca tabuleiroSelecionado tPassado tPresente tFuturo jogadorAtual foco linhaOrigem colunaOrigem linhaDestino colunaDestino
                     else if (jogada == "p")
                         then do
-                            movimentarPeca tabuleiroSelecionado tPassado tPresente tFuturo jogadorAtual foco linhaOrigem colunaOrigem linhaDestino colunaDestino
+                            plantarSemente tabuleiroSelecionado tPassado tPresente tFuturo foco linhaDestino colunaDestino
                     else if (jogada == "v")
                         then do
                             putStrLn viagem
