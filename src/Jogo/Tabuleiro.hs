@@ -13,12 +13,6 @@ jogador1 = "\x1F98A"
 jogador2 :: String
 jogador2 = "\x1F407"
 
-focoJogador1 :: String
-focoJogador1 = "passado"
-
-focoJogador2 :: String
-focoJogador2 = "futuro"
-
 semente :: String 
 semente = "\x1F330"
 
@@ -56,6 +50,14 @@ atualizarTabuleiro :: Tabuleiro -> Int -> Int -> Int -> Int -> String -> Tabulei
 atualizarTabuleiro tabuleiro linhaAntiga colunaAntiga linhaNova colunaNova jogador =
     let tabuleiroSemJogador = modificarTabuleiro tabuleiro linhaAntiga colunaAntiga "\x1F533"  -- Remove a peça antiga
     in modificarTabuleiro tabuleiroSemJogador linhaNova colunaNova jogador  -- Adiciona a peça na nova posição
+
+-- Atualiza o tabuleiro para viagens no tempo
+atualizarTabuleiroViagem :: Tabuleiro -> Tabuleiro -> Int -> Int -> String -> (Tabuleiro, Tabuleiro)
+atualizarTabuleiroViagem tabuleiroDestino tabuleiroOrigem linha coluna jogador =
+    let tabuleiroOrigemAtualizado = modificarTabuleiro tabuleiroOrigem linha coluna "\x1F533" -- Remove o jogador do tabuleiro de origem
+        tabuleiroDestinoAtualizado = modificarTabuleiro tabuleiroDestino linha coluna jogador -- Adiciona o jogador no novo tabuleiro
+    in (tabuleiroDestinoAtualizado, tabuleiroOrigemAtualizado)
+
 
 -- Atualiza o tabuleiro com as jogadas
 modificarTabuleiro :: Tabuleiro -> Int -> Int -> String -> Tabuleiro

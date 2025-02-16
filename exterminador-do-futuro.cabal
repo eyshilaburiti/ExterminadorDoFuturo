@@ -30,6 +30,7 @@ library
       Jogo.MovimentarPeca
       Jogo.PlantarSemente
       Jogo.Tabuleiro
+      Jogo.ViagemTempo
       Utils.ImprimirTxt
   other-modules:
       Paths_exterminador_do_futuro
