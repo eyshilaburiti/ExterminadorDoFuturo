@@ -106,7 +106,7 @@ novaPosicaoEmpurrado (linhaEmpurrado, colunaEmpurrado) (linhaEmpurrador, colunaE
         then Nothing  -- Se o jogador empurrado for para fora do tabuleiro, ele morre
         else Just (novaLinha, novaColuna) -- Se a posição for válida, retorna a nova posição dentro do Just.
 
-empurrarJogador :: Tabuleiro -> (Int, Int) -> (Int, Int) -> String -> String -> Tabuleiro
+{-empurrarJogador :: Tabuleiro -> (Int, Int) -> (Int, Int) -> String -> String -> Tabuleiro
 empurrarJogador tabuleiro (linhaEmpurrador, colunaEmpurrador) (linhaEmpurrado, colunaEmpurrado) jogadorEmpurrador jogadorEmpurrado =
     case novaPosicaoEmpurrado (linhaEmpurrado, colunaEmpurrado) (linhaEmpurrador, colunaEmpurrador) of
         Nothing -> 
@@ -120,7 +120,29 @@ empurrarJogador tabuleiro (linhaEmpurrador, colunaEmpurrador) (linhaEmpurrado, c
             let tabuleiroSemEmpurrado = modificarTabuleiro tabuleiro linhaEmpurrado colunaEmpurrado jogadorEmpurrador  -- O empurrador ocupa a posição onde estava o empurrado.
                 tabuleiroComEmpurrador = modificarTabuleiro tabuleiroSemEmpurrado linhaEmpurrador colunaEmpurrador "\x1F533"  -- A posição antiga do empurrador é apagada.
                 tabuleiroEmpurradoMovido = modificarTabuleiro tabuleiroComEmpurrador novaLinha novaColuna jogadorEmpurrado  -- O jogador empurrado é movido para sua nova posição.
-            in tabuleiroEmpurradoMovido 
+            in tabuleiroEmpurradoMovido -}
+
+empurrarJogador :: Tabuleiro -> (Int, Int) -> (Int, Int) -> String -> String -> Tabuleiro
+empurrarJogador tabuleiro (linhaEmpurrador, colunaEmpurrador) (linhaEmpurrado, colunaEmpurrado) jogadorEmpurrador jogadorEmpurrado =
+    case novaPosicaoEmpurrado (linhaEmpurrado, colunaEmpurrado) (linhaEmpurrador, colunaEmpurrador) of
+        Nothing -> 
+            -- O empurrado sai do tabuleiro (morre), então removemos ele e movemos o empurrador para sua posição
+            let tabuleiroSemEmpurrado = modificarTabuleiro tabuleiro linhaEmpurrado colunaEmpurrado "\x1F533"  -- Remove o empurrado
+                tabuleiroComEmpurrador = modificarTabuleiro tabuleiroSemEmpurrado linhaEmpurrado colunaEmpurrado jogadorEmpurrador  -- O empurrador ocupa a casa do empurrado
+            in modificarTabuleiro tabuleiroComEmpurrador linhaEmpurrador colunaEmpurrador "\x1F533"  -- Apaga a posição original do empurrador para indicar que ele se moveu.
+
+
+        Just (novaLinha, novaColuna) -> -- TA DANDO ERRO - > loop
+            let ocupanteFinal = (tabuleiro !! novaLinha) !! novaColuna  -- Quem está na posição final do empurrão?
+            in if ocupanteFinal /= "\x1F533"  -- Se a posição final estiver ocupada, precisa empurrar em cadeia
+                then let tabuleiroAposEmpurrao = empurrarJogador tabuleiro (linhaEmpurrado, colunaEmpurrado) (novaLinha, novaColuna) jogadorEmpurrado ocupanteFinal
+                     in empurrarJogador tabuleiroAposEmpurrao (linhaEmpurrador, colunaEmpurrador) (linhaEmpurrado, colunaEmpurrado) jogadorEmpurrador jogadorEmpurrado
+                else 
+                    -- O empurrado sobrevive e se move para a nova posição
+                    let tabuleiroSemEmpurrado = modificarTabuleiro tabuleiro linhaEmpurrado colunaEmpurrado jogadorEmpurrador  -- O empurrador ocupa a posição onde estava o empurrado.
+                        tabuleiroComEmpurrador = modificarTabuleiro tabuleiroSemEmpurrado linhaEmpurrador colunaEmpurrador "\x1F533"  -- A posição antiga do empurrador é apagada.
+                        tabuleiroEmpurradoMovido = modificarTabuleiro tabuleiroComEmpurrador novaLinha novaColuna jogadorEmpurrado  -- O jogador empurrado é movido para sua nova posição.
+                    in tabuleiroEmpurradoMovido
 
 empurrarador :: Tabuleiro -> (Int, Int) -> (Int, Int) -> String -> String -> Tabuleiro
 empurrarador tabuleiro (linhaEmpurrador, colunaEmpurrador) (linhaEmpurrado, colunaEmpurrado) jogadorEmpurrador jogadorEmpurrado =
@@ -143,6 +165,13 @@ posicaoOcupada :: Tabuleiro -> Int -> Int -> Bool
 posicaoOcupada tabuleiro linha coluna =
     let valor = (tabuleiro !! linha) !! coluna 
     in valor /= "\x1F533" 
+
+-- Verifica se há um arbustp
+verificarMorteNoArbusto :: Tabuleiro -> Int -> Int -> String -> Tabuleiro
+verificarMorteNoArbusto tabuleiro linha coluna jogador =
+    if (tabuleiro !! linha !! coluna) == "\x1F331" -- Verifica se a casa contém um arbusto
+        then modificarTabuleiro tabuleiro linha coluna "\x1F331" -- Remove o jogador, mantendo o arbusto
+        else tabuleiro
 
 -- Verifica vitória
 verificarVitoria :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> (Bool, String)
