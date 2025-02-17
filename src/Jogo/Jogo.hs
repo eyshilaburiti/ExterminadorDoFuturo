@@ -1,10 +1,11 @@
 module Jogo.Jogo where
     
-import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabuleiro4x4, inicializarTabuleiro, movimentoValido, verificarJogadorTabuleiro)
+import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabuleiro4x4, inicializarTabuleiro, movimentoValido, verificarJogadorTabuleiro, verificarVitoria)
 import Interface.Jogador (obterJogada, definirFoco, escolherJogada)
 import Jogo.MovimentarPeca (movimentarPeca)
 import Jogo.ViagemTempo(defineViagem, posicaoLivre, viagem)
 import Jogo.PlantarSemente (plantarSemente)
+import Utils.ImprimirTxt (imprimirTxt)
 
 iniciarTabuleiro :: IO () 
 iniciarTabuleiro = do
@@ -17,7 +18,7 @@ iniciarTabuleiro = do
 
     rodadaJogador tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador1 "passado" "futuro" 0 0
 
-rodadaJogador :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String-> String -> String -> Int -> Int -> IO()
+rodadaJogador :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> String -> Int -> Int -> IO()
 rodadaJogador tPassado tPresente tFuturo jogadorAtual focoJogador1 focoJogador2 clonesJogador1 clonesJogador2 = do
     let foco = if jogadorAtual == jogador1 then focoJogador1 else focoJogador2
     let clones = if jogadorAtual == jogador1 then clonesJogador1 else clonesJogador2
@@ -26,25 +27,37 @@ rodadaJogador tPassado tPresente tFuturo jogadorAtual focoJogador1 focoJogador2 
 
     putStrLn $ "\nTurno do jogador: " ++ jogadorAtual
     (novoTPassado1, novoTPresente1, novoTFuturo1, novoFoco1, novoClone1) <- jogar tPassado tPresente tFuturo jogadorAtual foco clones
-    (novoTPassado2, novoTPresente2, novoTFuturo2, novoFoco2, novoClone2) <- jogar novoTPassado1 novoTPresente1 novoTFuturo1 jogadorAtual novoFoco1 novoClone1
+    let vitoria1 = verificarVitoria novoTPassado1 novoTPresente1 novoTFuturo1 jogador1 jogador2
+    if (fst vitoria1) then do
+        finalizarJogo (snd vitoria1)  -- Finaliza o jogo quando a vitória for detectada
+        return ()  -- Para garantir que o fluxo da função termine aqui
+    else do
+        (novoTPassado2, novoTPresente2, novoTFuturo2, novoFoco2, novoClone2) <- jogar novoTPassado1 novoTPresente1 novoTFuturo1 jogadorAtual novoFoco1 novoClone1
 
-    imprimirTabuleiros novoTPassado2 novoTPresente2 novoTFuturo2
+        -- Verifica vitória após a segunda jogada
+        let vitoria2 = verificarVitoria novoTPassado2 novoTPresente2 novoTFuturo2 jogador1 jogador2
+        if (fst vitoria2) 
+            then do
+                finalizarJogo (snd vitoria2)
+                return ()
+            else do
+                imprimirTabuleiros novoTPassado2 novoTPresente2 novoTFuturo2
 
-    novoFoco <- definirFoco "src/Interface/foco.txt" foco
+                novoFoco <- definirFoco "src/Interface/foco.txt" foco
 
-    let (novoFocoJogador1, novoFocoJogador2) =
-            if jogadorAtual == jogador1
-                then (novoFoco, focoJogador2)
-                else (focoJogador1, novoFoco)
-    
-    let (clonesAtualizadosJogador1, clonesAtualizadosJogador2) =
-            if jogadorAtual == jogador1
-                then (novoClone2, clonesJogador2)
-                else (clonesJogador1, novoClone2)
+                let (novoFocoJogador1, novoFocoJogador2) =
+                        if jogadorAtual == jogador1
+                            then (novoFoco, focoJogador2)
+                            else (focoJogador1, novoFoco)
+                    
+                let (clonesAtualizadosJogador1, clonesAtualizadosJogador2) =
+                        if jogadorAtual == jogador1
+                            then (novoClone2, clonesJogador2)
+                            else (clonesJogador1, novoClone2)
 
-    let proximoJogador = if jogadorAtual == jogador1 then jogador2 else jogador1
-    
-    rodadaJogador novoTPassado2 novoTPresente2 novoTFuturo2 proximoJogador novoFocoJogador1 novoFocoJogador2 clonesAtualizadosJogador1 clonesAtualizadosJogador2
+                let proximoJogador = if jogadorAtual == jogador1 then jogador2 else jogador1
+
+                rodadaJogador novoTPassado2 novoTPresente2 novoTFuturo2 proximoJogador novoFocoJogador1 novoFocoJogador2 clonesAtualizadosJogador1 clonesAtualizadosJogador2
 
 jogar :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> Int-> IO (Tabuleiro, Tabuleiro, Tabuleiro, String, Int)
 jogar tPassado tPresente tFuturo jogadorAtual foco clones = do
@@ -106,3 +119,9 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones = do
         else do
             putStrLn "Erro: Jogador não encontrado!"
             jogar tPassado tPresente tFuturo jogadorAtual foco clones
+
+-- Exibe mensagem de fim de jogo
+finalizarJogo :: String -> IO ()
+finalizarJogo jogadorVencedor = do
+    imprimirTxt "src/Interface/fimDeJogo.txt"
+    putStrLn $ "O jogador " ++ jogadorVencedor ++ " venceu o jogo!"
