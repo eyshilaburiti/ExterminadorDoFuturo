@@ -122,7 +122,7 @@ empurrarJogador tabuleiro (linhaEmpurrador, colunaEmpurrador) (linhaEmpurrado, c
                 tabuleiroEmpurradoMovido = modificarTabuleiro tabuleiroComEmpurrador novaLinha novaColuna jogadorEmpurrado  -- O jogador empurrado é movido para sua nova posição.
             in tabuleiroEmpurradoMovido -}
 
-empurrarJogador :: Tabuleiro -> (Int, Int) -> (Int, Int) -> String -> String -> Tabuleiro
+{-empurrarJogador :: Tabuleiro -> (Int, Int) -> (Int, Int) -> String -> String -> Tabuleiro
 empurrarJogador tabuleiro (linhaEmpurrador, colunaEmpurrador) (linhaEmpurrado, colunaEmpurrado) jogadorEmpurrador jogadorEmpurrado =
     case novaPosicaoEmpurrado (linhaEmpurrado, colunaEmpurrado) (linhaEmpurrador, colunaEmpurrador) of
         Nothing -> 
@@ -142,7 +142,30 @@ empurrarJogador tabuleiro (linhaEmpurrador, colunaEmpurrador) (linhaEmpurrado, c
                     let tabuleiroSemEmpurrado = modificarTabuleiro tabuleiro linhaEmpurrado colunaEmpurrado jogadorEmpurrador  -- O empurrador ocupa a posição onde estava o empurrado.
                         tabuleiroComEmpurrador = modificarTabuleiro tabuleiroSemEmpurrado linhaEmpurrador colunaEmpurrador "\x1F533"  -- A posição antiga do empurrador é apagada.
                         tabuleiroEmpurradoMovido = modificarTabuleiro tabuleiroComEmpurrador novaLinha novaColuna jogadorEmpurrado  -- O jogador empurrado é movido para sua nova posição.
-                    in tabuleiroEmpurradoMovido
+                    in tabuleiroEmpurradoMovido-}
+
+obtemCelula :: Tabuleiro -> Int -> Int -> String
+obtemCelula tabuleiro linha coluna = (tabuleiro !! linha) !! coluna
+
+empurrarJogador :: Tabuleiro -> (Int, Int) -> (Int, Int) -> String -> String -> Tabuleiro
+empurrarJogador tabuleiro (linhaEmpurrador, colunaEmpurrador) (linhaEmpurrado, colunaEmpurrado) jogadorEmpurrador jogadorEmpurrado =
+    case novaPosicaoEmpurrado (linhaEmpurrado, colunaEmpurrado) (linhaEmpurrador, colunaEmpurrador) of
+        Nothing -> 
+            let tabuleiroSemEmpurrado = modificarTabuleiro tabuleiro linhaEmpurrado colunaEmpurrado "\x1F533"
+                tabuleiroComEmpurrador = modificarTabuleiro tabuleiroSemEmpurrado linhaEmpurrado colunaEmpurrado jogadorEmpurrador
+            in modificarTabuleiro tabuleiroComEmpurrador linhaEmpurrador colunaEmpurrador "\x1F533"
+
+        Just (novaLinha, novaColuna) ->
+            -- Verifica se a nova posição está ocupada por outro jogador
+            let conteudoNovo = obtemCelula tabuleiro novaLinha novaColuna
+                tabuleiroPosEmpurrado = if conteudoNovo /= "\x1F533"  -- Se já houver alguém na nova posição
+                    then empurrarJogador tabuleiro (linhaEmpurrado, colunaEmpurrado) (novaLinha, novaColuna) jogadorEmpurrado conteudoNovo  -- Empurra o ocupante primeiro
+                    else tabuleiro
+            in
+                -- Move o empurrado para a nova posição e atualiza o empurrador
+                let tabuleiroMovido = modificarTabuleiro tabuleiroPosEmpurrado novaLinha novaColuna jogadorEmpurrado
+                    tabuleiroAtualizado = modificarTabuleiro tabuleiroMovido linhaEmpurrado colunaEmpurrado jogadorEmpurrador
+                in modificarTabuleiro tabuleiroAtualizado linhaEmpurrador colunaEmpurrador "\x1F533"
 
 empurrarador :: Tabuleiro -> (Int, Int) -> (Int, Int) -> String -> String -> Tabuleiro
 empurrarador tabuleiro (linhaEmpurrador, colunaEmpurrador) (linhaEmpurrado, colunaEmpurrado) jogadorEmpurrador jogadorEmpurrado =
