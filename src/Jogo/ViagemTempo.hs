@@ -2,7 +2,7 @@ module Jogo.ViagemTempo (defineViagem, posicaoLivre, viagem) where
 
 import System.IO (hFlush, stdout)
 import Utils.ImprimirTxt (imprimirTxt)
-import Jogo.Tabuleiro (Tabuleiro, atualizarTabuleiroViagem)
+import Jogo.Tabuleiro (Tabuleiro, atualizarTabuleiroViagem, selecionarTabuleiro)
 
 viagem :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> Int -> Int -> Int -> String -> (Tabuleiro, Tabuleiro, Tabuleiro, Int)
 viagem tPassado tPresente tFuturo novoTempo tempoAtual linha coluna clones jogadorAtual =
@@ -41,7 +41,7 @@ defineViagem caminhoArquivo tempoAtual clones = do
     else if (tempoAtual == "passado" && novoTempo == "presente") ||  (tempoAtual == "presente" && novoTempo == "futuro")
         then return novoTempo
     else if (tempoAtual == "presente" && novoTempo == "passado") || (tempoAtual == "futuro" && novoTempo == "presente") then do
-        if clones < 3 then return novoTempo
+        if clones < 4 then return novoTempo
         else do
             putStr "Não é possível viajar para o passado, pois a quantidade máxima de clones (4), já foi excedida"
             return "viagem impossível"
@@ -53,12 +53,6 @@ defineViagem caminhoArquivo tempoAtual clones = do
     else do 
         putStrLn "Opção Inválida"
         defineViagem caminhoArquivo tempoAtual clones
-
-
-selecionarTabuleiro :: String -> Tabuleiro -> Tabuleiro -> Tabuleiro -> Tabuleiro
-selecionarTabuleiro "passado" tPassado _ _ = tPassado
-selecionarTabuleiro "presente" _ tPresente _ = tPresente
-selecionarTabuleiro "futuro" _ _ tFuturo = tFuturo
 
 
 -- Função usada para verificar se a posição que o jogador quer ocupar no novo tempo está ocupada
