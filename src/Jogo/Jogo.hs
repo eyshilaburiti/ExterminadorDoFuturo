@@ -9,6 +9,7 @@ import Jogo.RemoveSemente (removeSemente)
 import Utils.ImprimirTxt (imprimirTxt)
 import System.IO (hFlush, stdout)
 import Jogo.Bot(escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot)
+import Control.Concurrent (threadDelay)
 
 iniciarTabuleiro :: IO () 
 iniciarTabuleiro = do
@@ -86,6 +87,7 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
             jogada <- if ehBot jogadorAtual bot
                 then do 
                     jogadaBot <- escolherJogadaBot
+                    threadDelay (2 * 1000000)  -- 2 seconds
                     putStrLn $ "A jogada escolhida pelo bot foi: " ++ jogadaBot ++ "\n"
                     return jogadaBot
                 else escolherJogada
@@ -96,6 +98,7 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
                 then if ehBot jogadorAtual bot
                     then do
                         tempoBot <- escolherTempoBot foco
+                        threadDelay (2 * 1000000)  -- 2 seconds
                         putStrLn $ "Tempo escolhido pelo bot: " ++ tempoBot
                         return tempoBot
                     else defineViagem "src/Interface/viagem.txt" foco clones
@@ -108,6 +111,7 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
                     -- se um bot for o jogador atual ele escolhe a sua jogada
                     (linhaOrigem, colunaOrigem) <- if ehBot jogadorAtual bot
                         then do
+                            threadDelay (2 * 1000000)  -- 2 seconds
                             (linhaOrigemBot, colunaOrigemBot) <- escolherOrigemBot tabuleiroSelecionado jogadorAtual
                             putStrLn $ "Origem escolhida pelo bot: " ++ show (linhaOrigemBot + 1, colunaOrigemBot + 1)
                             return (linhaOrigemBot, colunaOrigemBot)                       
@@ -134,6 +138,7 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
                             (linhaDestino, colunaDestino) <- if ehBot jogadorAtual bot
                                 then do
                                     (linhaDestinoBot, colunaDestinoBot) <- escolherDestinoBot (linhaOrigem, colunaOrigem)
+                                    threadDelay (2 * 1000000)  -- 2 seconds
                                     putStrLn $ "Destino escolhido pelo bot: " ++ show (linhaDestinoBot + 1, colunaDestinoBot + 1)
                                     return (linhaDestinoBot, colunaDestinoBot)                               
                                 else obterJogadaDestino "src/Interface/movimento.txt" linhaOrigem colunaOrigem jogadorAtual
@@ -152,19 +157,13 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
                             (linhaDestino, colunaDestino) <- if ehBot jogadorAtual bot
                                 then do
                                     (linhaDestinoBot, colunaDestinoBot) <- escolherDestinoBot (linhaOrigem, colunaOrigem)
+                                    threadDelay (2 * 1000000)  -- 2 seconds
                                     putStrLn $ "Destino escolhido pelo bot: " ++ show (linhaDestinoBot + 1, colunaDestinoBot + 1)
                                     return (linhaDestinoBot, colunaDestinoBot)                               
                                 else obterJogadaDestino "src/Interface/movimento.txt" linhaOrigem colunaOrigem jogadorAtual
 
                             (novoTPassado, novoTPresente, novoTFuturo) <- 
                                 plantarSemente tabuleiroSelecionado tPassado tPresente tFuturo foco linhaDestino colunaDestino
-                            return (novoTPassado, novoTPresente, novoTFuturo, foco, clones)
-                        
-                        "r" -> do
-                            (linhaDestino, colunaDestino) <- obterJogada "Coordenadas de Destino: "
-                            (novoTPassado, novoTPresente, novoTFuturo) <- 
-                                removeSemente tabuleiroSelecionado tPassado tPresente tFuturo foco linhaDestino colunaDestino jogadorAtual
-                                
                             return (novoTPassado, novoTPresente, novoTFuturo, foco, clones)
 
                         _ -> do

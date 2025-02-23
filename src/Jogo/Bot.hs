@@ -1,3 +1,5 @@
+
+
 module Jogo.Bot (escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot) where
 
 import System.Random (randomRIO)
