@@ -84,8 +84,22 @@ movimentoValido tabuleiro (linhaAntiga, colunaAntiga) (linhaNova, colunaNova) =
 
 plantarSementeNoTabuleiro :: Tabuleiro -> Int -> Int -> String -> Tabuleiro
 plantarSementeNoTabuleiro tabuleiro linha coluna planta =
-    take linha tabuleiro ++ [take coluna (tabuleiro !! linha) ++ [planta] ++ drop (coluna + 1) (tabuleiro !! linha)] ++ drop (linha + 1) tabuleiro
- 
+    if not (posicaoOcupada tabuleiro linha coluna) then do 
+        take linha tabuleiro ++ [take coluna (tabuleiro !! linha) ++ [planta] ++ drop (coluna + 1) (tabuleiro !! linha)] ++ drop (linha + 1) tabuleiro
+    else tabuleiro
+
+temPlanta :: Tabuleiro -> Int -> Int -> Bool
+temPlanta tabuleiro linha coluna = 
+    let valor = (tabuleiro !! linha) !! coluna
+    in valor `elem` [semente, arbusto, arvore]
+
+
+removerSementeNoTabuleiro :: Tabuleiro -> Int -> Int -> String -> Tabuleiro
+removerSementeNoTabuleiro tabuleiro linha coluna jogador =
+    take linha tabuleiro ++ [take coluna (tabuleiro !! linha) ++ [jogador] ++ drop (coluna + 1) (tabuleiro !! linha)] ++ drop (linha + 1) tabuleiro
+
+
+
 contarPecas :: String -> Tabuleiro -> Int
 contarPecas jogador tabuleiro = 
     length [(linha, coluna) | (linha, linhaVals) <- zip [0..] tabuleiro,

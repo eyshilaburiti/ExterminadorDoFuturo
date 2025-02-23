@@ -29,6 +29,7 @@ library
       Jogo.Jogo
       Jogo.MovimentarPeca
       Jogo.PlantarSemente
+      Jogo.RemoveSemente
       Jogo.Tabuleiro
       Jogo.ViagemTempo
       Utils.ImprimirTxt

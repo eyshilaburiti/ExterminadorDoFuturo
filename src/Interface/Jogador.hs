@@ -17,6 +17,8 @@ escolherJogada = do
         return escolhaMinuscula
     else if escolhaMinuscula == "v" then do
         return escolhaMinuscula
+    else if escolhaMinuscula == "r" then do
+        return escolhaMinuscula
     else do 
         putStrLn "Entrada inválida!"
         escolherJogada  

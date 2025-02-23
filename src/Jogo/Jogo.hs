@@ -5,6 +5,7 @@ import Interface.Jogador (obterJogada, definirFoco, escolherJogada)
 import Jogo.MovimentarPeca (movimentarPeca)
 import Jogo.ViagemTempo(defineViagem, posicaoLivre, viagem)
 import Jogo.PlantarSemente (plantarSemente)
+import Jogo.RemoveSemente (removeSemente)
 import Utils.ImprimirTxt (imprimirTxt)
 
 iniciarTabuleiro :: IO () 
@@ -110,6 +111,13 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones = do
                             (linhaDestino, colunaDestino) <- obterJogada "Coordenadas de Destino: "
                             (novoTPassado, novoTPresente, novoTFuturo) <- 
                                 plantarSemente tabuleiroSelecionado tPassado tPresente tFuturo foco linhaDestino colunaDestino
+                            return (novoTPassado, novoTPresente, novoTFuturo, foco, clones)
+                        
+                        "r" -> do
+                            (linhaDestino, colunaDestino) <- obterJogada "Coordenadas de Destino: "
+                            (novoTPassado, novoTPresente, novoTFuturo) <- 
+                                removeSemente tabuleiroSelecionado tPassado tPresente tFuturo foco linhaDestino colunaDestino jogadorAtual
+                                
                             return (novoTPassado, novoTPresente, novoTFuturo, foco, clones)
 
                         _ -> do
