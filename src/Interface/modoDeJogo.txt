@@ -1,0 +1,8 @@
+════════════════════════════════════════════════════════════
+Escolher Modo de Jogo
+- Selecione como deseja jogar nesta partida.
+
+(s) Jogar sozinho contra o Bot
+(d) Jogar em dupla contra outro jogador
+
+════════════════════════════════════════════════════════════
