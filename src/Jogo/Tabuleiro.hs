@@ -194,6 +194,12 @@ posicaoOcupada tabuleiro linha coluna =
     let valor = (tabuleiro !! linha) !! coluna 
     in valor /= "\x1F533" 
 
+--verifica se o jogador inserido está presente na coordenada de origem inserida
+jogadorNaPosicao :: Tabuleiro -> Int -> Int -> String-> Bool
+jogadorNaPosicao tabuleiro linha coluna jogador = 
+    let valor = (tabuleiro !! linha) !! coluna
+    in valor == jogador
+
 -- Verifica se há um arbustp
 verificarMorteNoArbusto :: Tabuleiro -> Int -> Int -> String -> Tabuleiro
 verificarMorteNoArbusto tabuleiro linha coluna jogador =
@@ -213,3 +219,9 @@ existeJogador :: Tabuleiro -> String -> Int
 existeJogador tabuleiro jogador
     | any (elem jogador) tabuleiro = 1
     | otherwise = 0
+
+selecionarTabuleiro :: String -> Tabuleiro -> Tabuleiro -> Tabuleiro -> Tabuleiro
+selecionarTabuleiro "passado" tPassado _ _ = tPassado
+selecionarTabuleiro "presente" _ tPresente _ = tPresente
+selecionarTabuleiro "futuro" _ _ tFuturo = tFuturo
+

@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Interface.Jogador
+      Jogo.Bot
       Jogo.Jogo
       Jogo.MovimentarPeca
       Jogo.PlantarSemente
@@ -42,6 +43,7 @@ library
   build-depends:
       array
     , base >=4.7 && <5
+    , random >=1.2 && <2
   default-language: Haskell2010
 
 executable exterminador-do-futuro-exe
@@ -57,4 +59,5 @@ executable exterminador-do-futuro-exe
       array
     , base >=4.7 && <5
     , exterminador-do-futuro
+    , random >=1.2 && <2
   default-language: Haskell2010
