@@ -1,9 +1,7 @@
-
-
 module Jogo.Bot (escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot) where
 
 import System.Random (randomRIO)
-import Jogo.Tabuleiro (Tabuleiro, verificarJogadorTabuleiro, movimentoValido, posicaoOcupada, selecionarTabuleiro, jogadorNaPosicao)
+import Jogo.Tabuleiro (Tabuleiro, verificarJogadorTabuleiro, jogadorNaPosicao, existeJogador)
 
 -- | O bot escolhe uma jogada: "m" para mover, "p" para plantar, "v" para viajar
 escolherJogadaBot :: IO String
@@ -47,8 +45,33 @@ destinosValidos (linha, coluna) =
     dentroDoTabuleiro (l, c) = l >= 0 && l < 4 && c >= 0 && c < 4
 
 
-escolherFocoBot :: String -> IO String
-escolherFocoBot foco = do
+escolherFocoBot :: Tabuleiro -> Tabuleiro -> Tabuleiro-> String -> String -> IO String 
+escolherFocoBot tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador foco = do
     let focos = ["passado", "presente", "futuro"]
     indice <- randomRIO (0, length focos - 1)
-    return (focos !! indice)
+
+    case (focos !! indice) of
+        "passado" -> 
+            if (existeJogador tabuleiroPassado jogador) == 1 
+                then return (focos !! indice)
+                else do
+                    putStrLn "Jogador não encontrado nesse tempo."
+                    escolherFocoBot tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador foco
+
+        "presente" -> 
+            if (existeJogador tabuleiroPresente jogador) == 1 
+                then return (focos !! indice)
+                else do
+                    putStrLn "Jogador não encontrado nesse tempo."
+                    escolherFocoBot tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador foco
+
+        "futuro" -> 
+            if (existeJogador tabuleiroFuturo jogador) == 1 
+                then return (focos !! indice)
+                else do
+                    putStrLn "Jogador não encontrado nesse tempo."
+                    escolherFocoBot tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador foco
+
+        _ -> do
+            putStrLn "Opção Inválida"
+            escolherFocoBot tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador foco

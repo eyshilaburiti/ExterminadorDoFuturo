@@ -228,7 +228,7 @@ verificarVitoria tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador1 jog
     | ((existeJogador tabuleiroPassado jogador2) + (existeJogador tabuleiroPresente jogador2) + (existeJogador tabuleiroFuturo jogador2)) == 1 = (True, jogador1)
     | otherwise = (False, jogador1)
 
--- Verifica se existe peça de jogador em um tabuleiro específico
+-- Verifica se existe peça de jogador em um tabuleiro específico, retorna 1 se existe, caso contrário retorna 0
 existeJogador :: Tabuleiro -> String -> Int
 existeJogador tabuleiro jogador
     | any (elem jogador) tabuleiro = 1

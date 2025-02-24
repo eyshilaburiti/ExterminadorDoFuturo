@@ -3,7 +3,7 @@ module Interface.Jogador where
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
 import Utils.ImprimirTxt (imprimirTxt)
-import Jogo.Tabuleiro(jogadorNaPosicao, Tabuleiro)
+import Jogo.Tabuleiro(jogadorNaPosicao, existeJogador, Tabuleiro)
 import Data.Char (toLower)  -- Importa a função toLower para converter caracteres para minúscula
 
 escolherJogada :: IO String
@@ -67,8 +67,6 @@ obterJogadaDestino caminhoArquivo linha coluna jogador = do
         putStrLn "Comando inválido"
         obterJogadaDestino caminhoArquivo linha coluna jogador
 
-    
-
 -- Função para obter um número válido dentro de um intervalo específico
 obterPosicao :: String -> IO Int
 obterPosicao mensagem = do
@@ -94,20 +92,34 @@ obterLocalSemente = do
     return (linha, coluna)
 
 -- Função que define o foco do jogador
-definirFoco :: String -> String -> IO String 
-definirFoco caminhoArquivo focoAnterior = do
-    -- putStr "Escolha o foco para a próxima rodada (passado, presente, futuro): "
-    -- putStr mensagem
+definirFoco :: String -> Tabuleiro -> Tabuleiro -> Tabuleiro-> String -> String -> IO String 
+definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior = do
     imprimirTxt caminhoArquivo
     hFlush stdout
     foco <- getLine
 
-    if foco == "passado"
-        then return foco
-    else if foco == "presente"
-        then return foco
-    else if foco == "futuro"
-        then return foco
-    else do
-        putStrLn "Opção Inválida"
-        definirFoco caminhoArquivo focoAnterior  -- Chama a função novamente até que o jogador insira um valor válido.
+    case foco of
+        "passado" -> 
+            if (existeJogador tabuleiroPassado jogador) == 1 
+                then return foco
+                else do
+                    putStrLn "Jogador não encontrado nesse tempo."
+                    definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
+
+        "presente" -> 
+            if (existeJogador tabuleiroPresente jogador) == 1 
+                then return foco
+                else do
+                    putStrLn "Jogador não encontrado nesse tempo."
+                    definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
+
+        "futuro" -> 
+            if (existeJogador tabuleiroFuturo jogador) == 1 
+                then return foco
+                else do
+                    putStrLn "Jogador não encontrado nesse tempo."
+                    definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
+
+        _ -> do
+            putStrLn "Opção Inválida"
+            definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior

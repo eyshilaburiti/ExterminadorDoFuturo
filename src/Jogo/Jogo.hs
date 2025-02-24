@@ -51,10 +51,10 @@ rodadaJogador tPassado tPresente tFuturo jogadorAtual focoJogador1 focoJogador2 
 
                 novoFoco <- if ehBot jogadorAtual bot
                     then do
-                        focoBot <- escolherFocoBot foco
+                        focoBot <- escolherFocoBot novoTPassado2 novoTPresente2 novoTFuturo2 jogadorAtual foco
                         putStrLn $ "O foco do bot na próxima rodada será: " ++ focoBot ++ "\n" 
                         return focoBot
-                    else definirFoco "src/Interface/foco.txt" foco
+                    else definirFoco "src/Interface/foco.txt" novoTPassado2 novoTPresente2 novoTFuturo2 jogadorAtual foco
 
 
                 let (novoFocoJogador1, novoFocoJogador2) =
