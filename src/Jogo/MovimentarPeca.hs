@@ -32,29 +32,29 @@ module Jogo.MovimentarPeca (movimentarPeca) where
 
 import Jogo.Tabuleiro (Tabuleiro, atualizarTabuleiro, movimentoValido, empurrarJogador, modificarTabuleiro, semente, removerSementeNoTabuleiro, obtemCelula)
 
-movimentarPeca :: Tabuleiro -> Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> Int -> Int -> Int -> Int -> IO (Tabuleiro, Tabuleiro, Tabuleiro)
+movimentarPeca :: Tabuleiro -> Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> Int -> Int -> Int -> Int -> IO (Tabuleiro, Tabuleiro, Tabuleiro, Bool)
 movimentarPeca tabuleiroSelecionado tPassado tPresente tFuturo jogadorAtual foco linhaOrigem colunaOrigem linhaDestino colunaDestino =
-    let ocupante = (tabuleiroSelecionado !! linhaDestino) !! colunaDestino
-        outroJogador = if ocupante /= "\x1F533" && ocupante /= jogadorAtual && ocupante /= "\x1F330" then ocupante else ""
+    let ocupante = obtemCelula tabuleiroSelecionado linhaDestino colunaDestino
     in if movimentoValido tabuleiroSelecionado (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino)
         then do
-            let novoTabuleiro
-                    | ocupante == "\x1F331" = -- Se a célula de destino é um arbusto
-                        modificarTabuleiro tabuleiroSelecionado linhaOrigem colunaOrigem "\x1F533" -- Remove o jogador da origem
-                    | outroJogador /= "" && outroJogador /= "\x1F330" = -- Se há outro jogador no destino
-                        empurrarJogador tabuleiroSelecionado (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino) jogadorAtual outroJogador
-                    | otherwise = -- Movimento normal
-                        modificarTabuleiro (modificarTabuleiro tabuleiroSelecionado linhaOrigem colunaOrigem "\x1F533") linhaDestino colunaDestino jogadorAtual
-
-            -- Atualiza o tabuleiro correto com base no foco
+            let (novoTabuleiro, jogadorMorreu) 
+                    | ocupante == "\x1F331" =
+                        -- Morte: remove a peça que entrou na planta
+                        (modificarTabuleiro tabuleiroSelecionado linhaOrigem colunaOrigem "\x1F533", True)
+                    | ocupante /= "\x1F533" && ocupante /= semente && ocupante /= jogadorAtual = 
+                        -- Empurra jogadores, ignora plantas
+                        (empurrarJogador tabuleiroSelecionado (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino) jogadorAtual ocupante, False)
+                    | otherwise = 
+                        -- Movimento normal
+                        (modificarTabuleiro (modificarTabuleiro tabuleiroSelecionado linhaOrigem colunaOrigem "\x1F533") linhaDestino colunaDestino jogadorAtual, False)
             let (novoTPassado, novoTPresente, novoTFuturo) =
-                    case foco of
-                        "passado"  -> (novoTabuleiro, tPresente, tFuturo)
-                        "presente" -> (tPassado, novoTabuleiro, tFuturo)
-                        "futuro"   -> (tPassado, tPresente, novoTabuleiro)
-                        _          -> (tPassado, tPresente, tFuturo) -- Caso padrão (não altera nada)
-                        
-            return (novoTPassado, novoTPresente, novoTFuturo)
+                    if foco == "passado" 
+                        then (novoTabuleiro, tPresente, tFuturo)
+                    else if foco == "presente"
+                        then (tPassado, novoTabuleiro, tFuturo)
+                    else (tPassado, tPresente, novoTabuleiro)
+
+            return (novoTPassado, novoTPresente, novoTFuturo, jogadorMorreu)
         else do
             putStrLn "Movimento inválido! Você não pode se mover para essa casa."
-            return (tPassado, tPresente, tFuturo)
+            return (tPassado, tPresente, tFuturo, False)
