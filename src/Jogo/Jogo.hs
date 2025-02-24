@@ -133,7 +133,7 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
                                         else putStrLn ""
                                     return (novoTPassado, novoTPresente, novoTFuturo, novoTempo, novosClones)
                         
-                        "m" -> do
+                        {-"m" -> do
                             -- se o jogador for um bot ele escolhe sua coluna de destino
                             (linhaDestino, colunaDestino) <- if ehBot jogadorAtual bot
                                 then do
@@ -148,6 +148,29 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
                                     (novoTPassado, novoTPresente, novoTFuturo) <- 
                                         movimentarPeca tabuleiroSelecionado tPassado tPresente tFuturo jogadorAtual foco linhaOrigem colunaOrigem linhaDestino colunaDestino
                                     return (novoTPassado, novoTPresente, novoTFuturo, foco, clones)
+                                else do
+                                    putStrLn "Movimento inválido! Você só pode se mover uma casa na horizontal ou na vertical."
+                                    jogar tPassado tPresente tFuturo jogadorAtual foco clones bot-}
+                        "m" -> do
+                            -- se o jogador for um bot ele escolhe sua coluna de destino
+                            (linhaDestino, colunaDestino) <- if ehBot jogadorAtual bot
+                                then do
+                                    (linhaDestinoBot, colunaDestinoBot) <- escolherDestinoBot (linhaOrigem, colunaOrigem)
+                                    threadDelay (2 * 1000000)  -- 2 seconds
+                                    putStrLn $ "Destino escolhido pelo bot: " ++ show (linhaDestinoBot + 1, colunaDestinoBot + 1)
+                                    return (linhaDestinoBot, colunaDestinoBot)                               
+                                else obterJogadaDestino "src/Interface/movimento.txt" linhaOrigem colunaOrigem jogadorAtual
+
+                            if movimentoValido tabuleiroSelecionado (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino) 
+                                then do
+                                    (novoTPassado, novoTPresente, novoTFuturo, jogadorMorreu) <- 
+                                        movimentarPeca tabuleiroSelecionado tPassado tPresente tFuturo jogadorAtual foco linhaOrigem colunaOrigem linhaDestino colunaDestino
+                                    if jogadorMorreu
+                                        then do
+                                            putStrLn "Jogador morreu ao entrar na planta!"
+                                            return (novoTPassado, novoTPresente, novoTFuturo, jogadorAtual, clones)
+                                        else
+                                            return (novoTPassado, novoTPresente, novoTFuturo, foco, clones)
                                 else do
                                     putStrLn "Movimento inválido! Você só pode se mover uma casa na horizontal ou na vertical."
                                     jogar tPassado tPresente tFuturo jogadorAtual foco clones bot
@@ -196,4 +219,3 @@ finalizarJogo jogadorVencedor = do
 
 ehBot :: String -> Bool -> Bool
 ehBot jogadorAtual bot = jogadorAtual == jogador2 && bot
-
