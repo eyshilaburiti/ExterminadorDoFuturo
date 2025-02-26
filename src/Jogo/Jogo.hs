@@ -20,6 +20,11 @@ iniciarTabuleiro = do
     let tabuleiroPresente = tabuleiro
     let tabuleiroFuturo = tabuleiro
 
+    regras <- visualizarRegras ()
+    if regras == True then imprimirTxt "src/Interface/regras.txt"
+    else putStr ""
+    
+
     bot <- escolheModoDeJogo "src/Interface/modoDeJogo.txt"
 
     rodadaJogador tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador1 "passado" "futuro" 0 0 bot
@@ -210,6 +215,17 @@ escolheModoDeJogo mensagem = do
             putStrLn "Opção inválida. Tente novamente."
             escolheModoDeJogo mensagem
 
+visualizarRegras :: () -> IO Bool
+visualizarRegras mensagem = do 
+    putStr "Deseja ver as regras do jogo?(s/n) "
+    hFlush stdout
+    resposta <- getLine
+    case resposta of 
+        "s" -> return True
+        "n" -> return False 
+        _   -> do 
+            putStrLn "Opção inválida. Tente novamente."
+            visualizarRegras ()
 
 -- Exibe mensagem de fim de jogo
 finalizarJogo :: String -> IO ()
