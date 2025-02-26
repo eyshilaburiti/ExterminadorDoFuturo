@@ -4,7 +4,7 @@ module Jogo.Tabuleiro where
 type Tabuleiro = [[String]]
 
 tabuleiro4x4 :: Tabuleiro
-tabuleiro4x4 = replicate 4 (replicate 4 "\x1F533") -- repetindo o símbolo do quadrado vazio ☐
+tabuleiro4x4 = replicate 4 (replicate 4 espacoVazio) -- repetindo o símbolo do quadrado vazio ☐
 
 -- Definindo os emojis dos jogadores
 espacoVazio :: String
@@ -172,7 +172,9 @@ empurrarJogador tabuleiro (linhaEmpurrador, colunaEmpurrador) (linhaEmpurrado, c
                         tabuleiroMovido = modificarTabuleiro tabuleiroComEmpurrador linhaEmpurrador colunaEmpurrador espacoVazio
                         -- Checamos o conteúdo da nova posição (onde a árvore cairia)
                         -- Se houver um jogador lá, ele é eliminado; a árvore também some
-                    in if conteudoNovo /= espacoVazio && conteudoNovo /= "\x1F331" && conteudoNovo /= "\x1F330"
+                    in if conteudoNovo /= espacoVazio && conteudoNovo /= arbusto && conteudoNovo /= semente
+                    -- in if conteudoNovo /= espacoVazio && conteudoNovo /= arbusto -- SEM A SEMENTE
+
                         then 
                             -- Há um jogador na posição, eliminamos ele (árvore caiu sobre ele)
                             modificarTabuleiro tabuleiroMovido novaLinha novaColuna espacoVazio
@@ -200,13 +202,6 @@ jogadorNaPosicao :: Tabuleiro -> Int -> Int -> String-> Bool
 jogadorNaPosicao tabuleiro linha coluna jogador = 
     let valor = (tabuleiro !! linha) !! coluna
     in valor == jogador
-
--- Verifica se há um arbustp
-verificarMorteNoArbusto :: Tabuleiro -> Int -> Int -> String -> Tabuleiro
-verificarMorteNoArbusto tabuleiro linha coluna jogador =
-    if (tabuleiro !! linha !! coluna) == "\x1F331" -- Verifica se a casa contém um arbusto
-        then modificarTabuleiro tabuleiro linha coluna "\x1F331" -- Remove o jogador, mantendo o arbusto
-        else tabuleiro
 
 -- Verifica vitória
 verificarVitoria :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> (Bool, String)

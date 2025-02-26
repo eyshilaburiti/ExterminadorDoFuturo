@@ -1,6 +1,6 @@
 module Jogo.MovimentarPeca (movimentarPeca) where
 
-import Jogo.Tabuleiro (Tabuleiro, atualizarTabuleiro, movimentoValido, empurrarJogador, modificarTabuleiro, semente, removerSementeNoTabuleiro, obtemCelula)
+import Jogo.Tabuleiro (Tabuleiro, atualizarTabuleiro, movimentoValido, empurrarJogador, modificarTabuleiro, semente, removerSementeNoTabuleiro, obtemCelula, arbusto, espacoVazio)
 
 movimentarPeca :: Tabuleiro -> Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> Int -> Int -> Int -> Int -> IO (Tabuleiro, Tabuleiro, Tabuleiro, Bool)
 movimentarPeca tabuleiroSelecionado tPassado tPresente tFuturo jogadorAtual foco linhaOrigem colunaOrigem linhaDestino colunaDestino =
@@ -8,15 +8,15 @@ movimentarPeca tabuleiroSelecionado tPassado tPresente tFuturo jogadorAtual foco
     in if movimentoValido tabuleiroSelecionado (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino)
         then do
             let (novoTabuleiro, jogadorMorreu) 
-                    | ocupante == "\x1F331" =
+                    | ocupante == arbusto =
                         -- Morte: remove a peça que entrou na planta
-                        (modificarTabuleiro tabuleiroSelecionado linhaOrigem colunaOrigem "\x1F533", True)
-                    | ocupante /= "\x1F533" && ocupante /= semente && ocupante /= jogadorAtual = 
+                        (modificarTabuleiro tabuleiroSelecionado linhaOrigem colunaOrigem espacoVazio, True)
+                    | ocupante /= espacoVazio && ocupante /= semente && ocupante /= jogadorAtual = 
                         -- Empurra jogadores, ignora plantas
                         (empurrarJogador tabuleiroSelecionado (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino) jogadorAtual ocupante, False)
                     | otherwise = 
                         -- Movimento normal
-                        (modificarTabuleiro (modificarTabuleiro tabuleiroSelecionado linhaOrigem colunaOrigem "\x1F533") linhaDestino colunaDestino jogadorAtual, False)
+                        (modificarTabuleiro (modificarTabuleiro tabuleiroSelecionado linhaOrigem colunaOrigem espacoVazio) linhaDestino colunaDestino jogadorAtual, False)
             let (novoTPassado, novoTPresente, novoTFuturo) =
                     if foco == "passado" 
                         then (novoTabuleiro, tPresente, tFuturo)

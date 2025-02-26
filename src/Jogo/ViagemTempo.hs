@@ -2,7 +2,7 @@ module Jogo.ViagemTempo (defineViagem, posicaoLivre, viagem) where
 
 import System.IO (hFlush, stdout)
 import Utils.ImprimirTxt (imprimirTxt)
-import Jogo.Tabuleiro (Tabuleiro, atualizarTabuleiroViagem, selecionarTabuleiro)
+import Jogo.Tabuleiro (Tabuleiro, atualizarTabuleiroViagem, selecionarTabuleiro, espacoVazio)
 
 viagem :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> Int -> Int -> Int -> String -> (Tabuleiro, Tabuleiro, Tabuleiro, Int)
 viagem tPassado tPresente tFuturo novoTempo tempoAtual linha coluna clones jogadorAtual =
@@ -59,4 +59,4 @@ defineViagem caminhoArquivo tempoAtual clones = do
 posicaoLivre :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> Int -> Int -> Bool
 posicaoLivre tPassado tPresente tFuturo novoTempo linha coluna = 
     let tabuleiro = selecionarTabuleiro novoTempo tPassado tPresente tFuturo
-    in (tabuleiro !! linha !! coluna) == "\x1F533" -- verifica se na linha e na coluna o char é o quadrado e se for retorna true
+    in (tabuleiro !! linha !! coluna) == espacoVazio -- verifica se na linha e na coluna o char é o quadrado e se for retorna true
