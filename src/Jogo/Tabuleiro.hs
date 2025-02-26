@@ -7,6 +7,9 @@ tabuleiro4x4 :: Tabuleiro
 tabuleiro4x4 = replicate 4 (replicate 4 "\x1F533") -- repetindo o símbolo do quadrado vazio ☐
 
 -- Definindo os emojis dos jogadores
+espacoVazio :: String
+espacoVazio = "\x1F533"
+
 jogador1 :: String
 jogador1 = "\x1F98A"  
 
@@ -48,13 +51,13 @@ imprimirTabuleiros t1 t2 t3 = do
 -- Atualiza o tabuleiro com as jogadas, removendo a peça da posição antiga
 atualizarTabuleiro :: Tabuleiro -> Int -> Int -> Int -> Int -> String -> Tabuleiro
 atualizarTabuleiro tabuleiro linhaAntiga colunaAntiga linhaNova colunaNova jogador =
-    let tabuleiroSemJogador = modificarTabuleiro tabuleiro linhaAntiga colunaAntiga "\x1F533"  -- Remove a peça antiga
+    let tabuleiroSemJogador = modificarTabuleiro tabuleiro linhaAntiga colunaAntiga espacoVazio  -- Remove a peça antiga
     in modificarTabuleiro tabuleiroSemJogador linhaNova colunaNova jogador  -- Adiciona a peça na nova posição
 
 -- Atualiza o tabuleiro para viagens no tempo
 atualizarTabuleiroViagem :: Tabuleiro -> Tabuleiro -> Int -> Int -> String -> (Tabuleiro, Tabuleiro)
 atualizarTabuleiroViagem tabuleiroDestino tabuleiroOrigem linha coluna jogador =
-    let tabuleiroOrigemAtualizado = modificarTabuleiro tabuleiroOrigem linha coluna "\x1F533" -- Chama modificarTabuleiro para substituir a posição (linha, coluna) no tabuleiro de origem por "☐" (representação de um espaço vazio). Isso simula o jogador "saindo" desse tabuleiro.
+    let tabuleiroOrigemAtualizado = modificarTabuleiro tabuleiroOrigem linha coluna espacoVazio -- Chama modificarTabuleiro para substituir a posição (linha, coluna) no tabuleiro de origem por "☐" (representação de um espaço vazio). Isso simula o jogador "saindo" desse tabuleiro.
         tabuleiroDestinoAtualizado = modificarTabuleiro tabuleiroDestino linha coluna jogador -- Chama modificarTabuleiro para colocar o jogador na mesma posição (linha, coluna), mas agora no tabuleiro de destino.Isso representa o jogador "chegando" ao novo tempo.
     in (tabuleiroDestinoAtualizado, tabuleiroOrigemAtualizado) --Retorna os dois tabuleiros atualizados como uma tupla (tabuleiroDestinoAtualizado, tabuleiroOrigemAtualizado), refletindo a viagem no tempo.
 
@@ -78,7 +81,7 @@ movimentoValido tabuleiro (linhaAntiga, colunaAntiga) (linhaNova, colunaNova) =
         difColuna = abs (colunaNova - colunaAntiga)
         destinoLivre = not (posicaoOcupada tabuleiro linhaNova colunaNova) -- Verifica se o destino está vazio.
         ocupante = (tabuleiro !! linhaNova) !! colunaNova
-    in (destinoLivre || ocupante /= "\x1F533") &&  -- Permite movimentação normal ou empurrão
+    in (destinoLivre || ocupante /= espacoVazio) &&  -- Permite movimentação normal ou empurrão
        ((difLinha == 1 && difColuna == 0) || (difLinha == 0 && difColuna == 1))
 
 
@@ -97,7 +100,6 @@ temPlanta tabuleiro linha coluna =
 removerSementeNoTabuleiro :: Tabuleiro -> Int -> Int -> String -> Tabuleiro
 removerSementeNoTabuleiro tabuleiro linha coluna jogador =
     take linha tabuleiro ++ [take coluna (tabuleiro !! linha) ++ [jogador] ++ drop (coluna + 1) (tabuleiro !! linha)] ++ drop (linha + 1) tabuleiro
-
 
 
 contarPecas :: String -> Tabuleiro -> Int
@@ -126,56 +128,72 @@ obtemCelula tabuleiro linha coluna = (tabuleiro !! linha) !! coluna
 empurrarJogador :: Tabuleiro -> (Int, Int) -> (Int, Int) -> String -> String -> Tabuleiro
 empurrarJogador tabuleiro (linhaEmpurrador, colunaEmpurrador) (linhaEmpurrado, colunaEmpurrado) jogadorEmpurrador jogadorEmpurrado =
     case novaPosicaoEmpurrado (linhaEmpurrado, colunaEmpurrado) (linhaEmpurrador, colunaEmpurrador) of
-        Nothing ->
-            let tabuleiroSemEmpurrado = modificarTabuleiro tabuleiro linhaEmpurrado colunaEmpurrado "\x1F533"
+        Nothing -> -- o empurrado sai do tabuleiro (morte pelas bordas)
+            let tabuleiroSemEmpurrado = modificarTabuleiro tabuleiro linhaEmpurrado colunaEmpurrado espacoVazio
                 tabuleiroComEmpurrador = modificarTabuleiro tabuleiroSemEmpurrado linhaEmpurrado colunaEmpurrado jogadorEmpurrador
-            in modificarTabuleiro tabuleiroComEmpurrador linhaEmpurrador colunaEmpurrador "\x1F533"
+            in modificarTabuleiro tabuleiroComEmpurrador linhaEmpurrador colunaEmpurrador espacoVazio
         
-        Just (novaLinha, novaColuna) ->
+        Just (novaLinha, novaColuna) -> -- ele eh empurrado 
             let conteudoNovo = obtemCelula tabuleiro novaLinha novaColuna -- Caso o Empurrado Tenha uma Nova Posição
             in if conteudoNovo == jogadorEmpurrado -- Verifica se a nova posição tem uma peça do mesmo jogador
                 then -- PARADOXO: elimina ambas as peças e move o empurrador
-                    let tabuleiroSemEmpurrado = modificarTabuleiro tabuleiro linhaEmpurrado colunaEmpurrado "\x1F533"  -- Remove o empurrado
-                        tabuleiroSemAmbos = modificarTabuleiro tabuleiroSemEmpurrado novaLinha novaColuna "\x1F533"     -- Remove a peça na nova posição
+                    let tabuleiroSemEmpurrado = modificarTabuleiro tabuleiro linhaEmpurrado colunaEmpurrado espacoVazio  -- Remove o empurrado
+                        tabuleiroSemAmbos = modificarTabuleiro tabuleiroSemEmpurrado novaLinha novaColuna espacoVazio    -- Remove a peça na nova posição
                         tabuleiroComEmpurrador = modificarTabuleiro tabuleiroSemAmbos linhaEmpurrado colunaEmpurrado jogadorEmpurrador  -- Empurrador ocupa a posição do empurrado
-                    in modificarTabuleiro tabuleiroComEmpurrador linhaEmpurrador colunaEmpurrador "\x1F533"  -- Limpa a posição original do empurrador
+                    in modificarTabuleiro tabuleiroComEmpurrador linhaEmpurrador colunaEmpurrador espacoVazio  -- Limpa a posição original do empurrador
                 
-                else if conteudoNovo == "\x1F331"
+                else if conteudoNovo == arbusto
                     then -- MORTE PELO ARBUSTO: mata a pessoa que foi para a casa do arbusto 
-                    let tabuleiroSemEmpurrado = modificarTabuleiro tabuleiro linhaEmpurrado colunaEmpurrado "\x1F533" -- remove o empurrado
+                    let tabuleiroSemEmpurrado = modificarTabuleiro tabuleiro linhaEmpurrado colunaEmpurrado espacoVazio -- remove o empurrado
                         tabuleiroComEmpurrador = modificarTabuleiro tabuleiroSemEmpurrado linhaEmpurrado colunaEmpurrado jogadorEmpurrador -- Empurrador ocupa a posição do empurrado
-                    in modificarTabuleiro tabuleiroComEmpurrador linhaEmpurrador colunaEmpurrador "\x1F533"  -- Limpa a posição original do empurrador
+                    in modificarTabuleiro tabuleiroComEmpurrador linhaEmpurrador colunaEmpurrador espacoVazio  -- Limpa a posição original do empurrador
+                
+                else if conteudoNovo == arvore && jogadorEmpurrado /= arvore -- Se há uma árvore no caminho do empurrado (mas o empurrado não é uma árvore)
+                    then 
+                    -- O Empurrado empurra uma árvore - a árvore desaparece, e ambos os jogadores permanecem vivos
+                    let 
+                        -- Remove a árvore do destino
+                        tabuleiroSemArvore = modificarTabuleiro tabuleiro novaLinha novaColuna espacoVazio
+                        -- Move o empurrado para esta posição (onde estava a árvore)
+                        tabuleiroComEmpurrado = modificarTabuleiro tabuleiroSemArvore novaLinha novaColuna jogadorEmpurrado
+                        -- Empurrador ocupa a posição do empurrado
+                        tabuleiroComEmpurrador = modificarTabuleiro tabuleiroComEmpurrado linhaEmpurrado colunaEmpurrado jogadorEmpurrador
+                    in modificarTabuleiro tabuleiroComEmpurrador linhaEmpurrador colunaEmpurrador espacoVazio
+                
+                else if jogadorEmpurrado == arvore -- Caso o empurrado seja uma árvore
+                    then 
+                    -- A árvore cai e elimina qualquer jogador na posição seguinte
+                    let 
+                        -- Primeiro removemos a árvore da posição original
+                        tabuleiroSemArvore = modificarTabuleiro tabuleiro linhaEmpurrado colunaEmpurrado espacoVazio
+                        -- Movemos o empurrador para a posição da árvore
+                        tabuleiroComEmpurrador = modificarTabuleiro tabuleiroSemArvore linhaEmpurrado colunaEmpurrado jogadorEmpurrador
+                        -- Esvaziamos a posição original do empurrador
+                        tabuleiroMovido = modificarTabuleiro tabuleiroComEmpurrador linhaEmpurrador colunaEmpurrador espacoVazio
+                        -- Checamos o conteúdo da nova posição (onde a árvore cairia)
+                        -- Se houver um jogador lá, ele é eliminado; a árvore também some
+                    in if conteudoNovo /= espacoVazio && conteudoNovo /= "\x1F331" && conteudoNovo /= "\x1F330"
+                        then 
+                            -- Há um jogador na posição, eliminamos ele (árvore caiu sobre ele)
+                            modificarTabuleiro tabuleiroMovido novaLinha novaColuna espacoVazio
+                        else 
+                            -- Não há jogador, apenas mantemos o tabuleiro como está
+                            tabuleiroMovido
                 
                 else -- Lógica normal de empurrão (com recursão para empurrão em cadeia)
-                    let tabuleiroPosEmpurrado = if conteudoNovo /= "\x1F533"
+                    let tabuleiroPosEmpurrado = if conteudoNovo /= espacoVazio
                             then empurrarJogador tabuleiro (linhaEmpurrado, colunaEmpurrado) (novaLinha, novaColuna) jogadorEmpurrado conteudoNovo
                             else tabuleiro
                     in -- Agora, finalizamos movendo o empurrado:
                         let tabuleiroMovido = modificarTabuleiro tabuleiroPosEmpurrado novaLinha novaColuna jogadorEmpurrado
                             tabuleiroAtualizado = modificarTabuleiro tabuleiroMovido linhaEmpurrado colunaEmpurrado jogadorEmpurrador
-                        in modificarTabuleiro tabuleiroAtualizado linhaEmpurrador colunaEmpurrador "\x1F533"
-
-empurrarador :: Tabuleiro -> (Int, Int) -> (Int, Int) -> String -> String -> Tabuleiro
-empurrarador tabuleiro (linhaEmpurrador, colunaEmpurrador) (linhaEmpurrado, colunaEmpurrado) jogadorEmpurrador jogadorEmpurrado =
-    case novaPosicaoEmpurrado (linhaEmpurrado, colunaEmpurrado) (linhaEmpurrador, colunaEmpurrador) of
-        --Nothing → O jogador é empurrado para fora do tabuleiro e morre e movemos, assim, o empurrador para sua posição
-        Nothing -> 
-            let tabuleiroSemEmpurrado = modificarTabuleiro tabuleiro linhaEmpurrado colunaEmpurrado "\x1F533"  -- Remove o empurrado
-                tabuleiroComEmpurrador = modificarTabuleiro tabuleiroSemEmpurrado linhaEmpurrado colunaEmpurrado jogadorEmpurrador  -- O empurrador ocupa a casa
-            in modificarTabuleiro tabuleiroComEmpurrador linhaEmpurrador colunaEmpurrador "\x1F533"  -- Limpa a posição antiga do empurrador
-
-        Just (novaLinha, novaColuna) ->
-            -- O empurrado sobreviveu e se move para a nova posição
-            let tabuleiroSemEmpurrado = modificarTabuleiro tabuleiro linhaEmpurrado colunaEmpurrado jogadorEmpurrador  -- Empurrador ocupa o destino
-                tabuleiroComEmpurrador = modificarTabuleiro tabuleiroSemEmpurrado linhaEmpurrador colunaEmpurrador "\x1F533"  -- Limpa a casa original do empurrador
-                tabuleiroEmpurradoMovido = modificarTabuleiro tabuleiroComEmpurrador novaLinha novaColuna jogadorEmpurrado  -- Move o empurrado
-            in tabuleiroEmpurradoMovido
+                        in modificarTabuleiro tabuleiroAtualizado linhaEmpurrador colunaEmpurrador espacoVazio
 
 -- Verifica se uma posição do tabuleiro está ocupada por algum boneco
 posicaoOcupada :: Tabuleiro -> Int -> Int -> Bool
 posicaoOcupada tabuleiro linha coluna =
     let valor = (tabuleiro !! linha) !! coluna 
-    in valor /= "\x1F533" 
+    in valor /= espacoVazio 
 
 --verifica se o jogador inserido está presente na coordenada de origem inserida
 jogadorNaPosicao :: Tabuleiro -> Int -> Int -> String-> Bool
