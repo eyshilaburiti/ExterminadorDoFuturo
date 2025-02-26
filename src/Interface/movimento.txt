@@ -1,6 +1,6 @@
 ════════════════════════════════════════════════════════════
 Escolher Movimento  
-    - Selecione para qual direção deseja mover-se na próxima jogada.
+    - Selecione para qual direção deseja mover-se.
 
     (w) Mover para cima
     (s) Mover para baixo

@@ -36,7 +36,7 @@
         escolhido.
         - Ao viajar do futuro para o presente ou do presente para o passado, um clone é 
         deixado para trás.
-        - Cada jogador pode ter no máximo 4 clones simultaneamente. Caso o limite seja 
+        - Cada jogador pode ter no máximo 4 clones. Caso o limite seja 
         atingido, viagens para tempos anteriores tornam-se impossíveis, mesmo que clones 
         anteriores já tenham sido eliminados.
         - Após uma viagem no tempo, o foco do jogador muda automaticamente para o tabuleiro 
