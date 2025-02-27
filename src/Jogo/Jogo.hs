@@ -188,7 +188,7 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
                                     threadDelay (2 * 1000000)  -- 2 seconds
                                     putStrLn $ "Destino escolhido pelo bot: " ++ show (linhaDestinoBot + 1, colunaDestinoBot + 1)
                                     return (linhaDestinoBot, colunaDestinoBot)                               
-                                else obterJogadaDestino "src/Interface/movimento.txt" linhaOrigem colunaOrigem jogadorAtual
+                                else obterJogadaDestino "src/Interface/plantar.txt" linhaOrigem colunaOrigem jogadorAtual
 
                             (novoTPassado, novoTPresente, novoTFuturo) <- 
                                 plantarSemente tabuleiroSelecionado tPassado tPresente tFuturo foco linhaDestino colunaDestino

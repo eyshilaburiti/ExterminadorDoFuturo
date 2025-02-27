@@ -91,15 +91,24 @@ plantarSementeNoTabuleiro tabuleiro linha coluna planta =
         take linha tabuleiro ++ [take coluna (tabuleiro !! linha) ++ [planta] ++ drop (coluna + 1) (tabuleiro !! linha)] ++ drop (linha + 1) tabuleiro
     else tabuleiro
 
+removerSementeNoTabuleiro :: Tabuleiro -> Int -> Int -> String -> Tabuleiro
+removerSementeNoTabuleiro tabuleiro linha coluna planta =
+    if plantaCerta tabuleiro  linha coluna planta then
+        take linha tabuleiro ++ [take coluna (tabuleiro !! linha) ++ [espacoVazio] ++ drop (coluna + 1) (tabuleiro !! linha)] ++ drop (linha + 1) tabuleiro
+    else tabuleiro
+
+plantaCerta :: Tabuleiro -> Int -> Int -> String -> Bool
+plantaCerta tabuleiro linha coluna planta =
+    let valor = (tabuleiro !! linha) !! coluna
+    in valor == planta
+
 temPlanta :: Tabuleiro -> Int -> Int -> Bool
 temPlanta tabuleiro linha coluna = 
     let valor = (tabuleiro !! linha) !! coluna
     in valor `elem` [semente, arbusto, arvore]
 
 
-removerSementeNoTabuleiro :: Tabuleiro -> Int -> Int -> String -> Tabuleiro
-removerSementeNoTabuleiro tabuleiro linha coluna jogador =
-    take linha tabuleiro ++ [take coluna (tabuleiro !! linha) ++ [jogador] ++ drop (coluna + 1) (tabuleiro !! linha)] ++ drop (linha + 1) tabuleiro
+
 
 
 contarPecas :: String -> Tabuleiro -> Int
