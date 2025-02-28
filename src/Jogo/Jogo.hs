@@ -1,5 +1,5 @@
 module Jogo.Jogo where
-
+    
 import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabuleiro4x4, inicializarTabuleiro, movimentoValido, verificarJogadorTabuleiro, verificarVitoria)
 import Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada)
 import Jogo.MovimentarPeca (movimentarPeca)
@@ -10,7 +10,7 @@ import Utils.ImprimirTxt (imprimirTxt)
 import System.IO (hFlush, stdout)
 import Jogo.Bot(escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot)
 import Control.Concurrent (threadDelay)
---import Jogo.Ranking (salvarVencedor, exibirRanking)
+
 
 registrarJogadores :: IO ((String, String), (String, String))
 registrarJogadores = do
@@ -72,6 +72,7 @@ iniciarTabuleiro = do
         else
             putStr ""
         rodadaJogador tabuleiroPassado tabuleiroPresente tabuleiroFuturo jog1 nome1 nome1 jog1 nome2 jog2 "passado" "futuro" 0 0 bot
+
 
 rodadaJogador :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String-> String -> String -> String -> String -> String -> String ->  Int -> Int -> Bool -> IO()
 rodadaJogador tPassado tPresente tFuturo jogadorAtual nomeAtual nome1 jog1 nome2 jog2 focoJogador1 focoJogador2 clonesJogador1 clonesJogador2 bot = do
@@ -136,6 +137,7 @@ rodadaJogador tPassado tPresente tFuturo jogadorAtual nomeAtual nome1 jog1 nome2
                 --rodadaJogador novoTPassado2 novoTPresente2 novoTFuturo2 proximoJogador novoFocoJogador1 novoFocoJogador2 clonesAtualizadosJogador1 clonesAtualizadosJogador2 bot
                 rodadaJogador novoTPassado2 novoTPresente2 novoTFuturo2 proximoJogador proxNome nome1 jog1 nome2 jog2 novoFocoJogador1 novoFocoJogador2 clonesAtualizadosJogador1 clonesAtualizadosJogador2 bot
 
+
 jogar :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> Int -> Bool -> IO (Tabuleiro, Tabuleiro, Tabuleiro, String, Int)
 jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
     putStrLn "\nTabuleiros atuais:"
@@ -150,12 +152,13 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
         then do
             -- Se o jogador é um bot chama a função para ele escolher sua jogada
             jogada <- if ehBot jogadorAtual bot
-                then do
+                then do 
                     jogadaBot <- escolherJogadaBot
                     threadDelay (2 * 1000000)  -- 2 seconds
                     putStrLn $ "A jogada escolhida pelo bot foi: " ++ jogadaBot ++ "\n"
                     return jogadaBot
                 else escolherJogada
+
 
             -- Se a jogada for "v" (viagem no tempo), definir o destino da viagem
             novoTempo <- if jogada == "v"
@@ -168,6 +171,7 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
                     else defineViagem "src/Interface/viagem.txt" foco clones
                 else return ""  -- Retorna string vazia para outros casos
 
+
             if novoTempo == "viagem impossível"
                 then jogar tPassado tPresente tFuturo jogadorAtual foco clones bot
                 else do
@@ -177,25 +181,43 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
                             threadDelay (2 * 1000000)  -- 2 seconds
                             (linhaOrigemBot, colunaOrigemBot) <- escolherOrigemBot tabuleiroSelecionado jogadorAtual
                             putStrLn $ "Origem escolhida pelo bot: " ++ show (linhaOrigemBot + 1, colunaOrigemBot + 1)
-                            return (linhaOrigemBot, colunaOrigemBot)
+                            return (linhaOrigemBot, colunaOrigemBot)                       
                         else obterJogadaOrigem "Coordenadas de Origem: " jogadorAtual tabuleiroSelecionado
 
                     case jogada of
                         "v" -> do
                             -- Quando a posição não está livre, refaz a jogada
                             if not (posicaoLivre tPassado tPresente tFuturo novoTempo linhaOrigem colunaOrigem)
-                                then do
+                                then do 
                                     putStrLn "Posição ocupada, escolha outra jogada ou viaje para outro tempo."
                                     jogar tPassado tPresente tFuturo jogadorAtual foco clones bot
                                 else do
-                                    let (novoTPassado, novoTPresente, novoTFuturo, novosClones) =
+                                    let (novoTPassado, novoTPresente, novoTFuturo, novosClones) = 
                                             viagem tPassado tPresente tFuturo novoTempo foco linhaOrigem colunaOrigem clones jogadorAtual
                                     -- Atualiza o foco para o novo tempo após a viagem e também a quantidade de clones
-                                    if ehBot jogadorAtual bot
+                                    if ehBot jogadorAtual bot 
                                         then putStrLn $ "O bot viajou para o " ++ novoTempo
                                         else putStrLn ""
                                     return (novoTPassado, novoTPresente, novoTFuturo, novoTempo, novosClones)
+                        
+                        {-"m" -> do
+                            -- se o jogador for um bot ele escolhe sua coluna de destino
+                            (linhaDestino, colunaDestino) <- if ehBot jogadorAtual bot
+                                then do
+                                    (linhaDestinoBot, colunaDestinoBot) <- escolherDestinoBot (linhaOrigem, colunaOrigem)
+                                    threadDelay (2 * 1000000)  -- 2 seconds
+                                    putStrLn $ "Destino escolhido pelo bot: " ++ show (linhaDestinoBot + 1, colunaDestinoBot + 1)
+                                    return (linhaDestinoBot, colunaDestinoBot)                               
+                                else obterJogadaDestino "src/Interface/movimento.txt" linhaOrigem colunaOrigem jogadorAtual
 
+                            if movimentoValido tabuleiroSelecionado (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino) 
+                                then do
+                                    (novoTPassado, novoTPresente, novoTFuturo) <- 
+                                        movimentarPeca tabuleiroSelecionado tPassado tPresente tFuturo jogadorAtual foco linhaOrigem colunaOrigem linhaDestino colunaDestino
+                                    return (novoTPassado, novoTPresente, novoTFuturo, foco, clones)
+                                else do
+                                    putStrLn "Movimento inválido! Você só pode se mover uma casa na horizontal ou na vertical."
+                                    jogar tPassado tPresente tFuturo jogadorAtual foco clones bot-}
                         "m" -> do
                             -- se o jogador for um bot ele escolhe sua coluna de destino
                             (linhaDestino, colunaDestino) <- if ehBot jogadorAtual bot
@@ -203,12 +225,12 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
                                     (linhaDestinoBot, colunaDestinoBot) <- escolherDestinoBot (linhaOrigem, colunaOrigem)
                                     threadDelay (2 * 1000000)  -- 2 seconds
                                     putStrLn $ "Destino escolhido pelo bot: " ++ show (linhaDestinoBot + 1, colunaDestinoBot + 1)
-                                    return (linhaDestinoBot, colunaDestinoBot)
+                                    return (linhaDestinoBot, colunaDestinoBot)                               
                                 else obterJogadaDestino "src/Interface/movimento.txt" linhaOrigem colunaOrigem jogadorAtual
 
-                            if movimentoValido tabuleiroSelecionado (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino)
+                            if movimentoValido tabuleiroSelecionado (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino) 
                                 then do
-                                    (novoTPassado, novoTPresente, novoTFuturo, jogadorMorreu) <-
+                                    (novoTPassado, novoTPresente, novoTFuturo, jogadorMorreu) <- 
                                         movimentarPeca tabuleiroSelecionado tPassado tPresente tFuturo jogadorAtual foco linhaOrigem colunaOrigem linhaDestino colunaDestino
                                     if jogadorMorreu
                                         then do
@@ -227,10 +249,10 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
                                     (linhaDestinoBot, colunaDestinoBot) <- escolherDestinoBot (linhaOrigem, colunaOrigem)
                                     threadDelay (2 * 1000000)  -- 2 seconds
                                     putStrLn $ "Destino escolhido pelo bot: " ++ show (linhaDestinoBot + 1, colunaDestinoBot + 1)
-                                    return (linhaDestinoBot, colunaDestinoBot)
-                                else obterJogadaDestino "src/Interface/movimento.txt" linhaOrigem colunaOrigem jogadorAtual
+                                    return (linhaDestinoBot, colunaDestinoBot)                               
+                                else obterJogadaDestino "src/Interface/plantar.txt" linhaOrigem colunaOrigem jogadorAtual
 
-                            (novoTPassado, novoTPresente, novoTFuturo) <-
+                            (novoTPassado, novoTPresente, novoTFuturo) <- 
                                 plantarSemente tabuleiroSelecionado tPassado tPresente tFuturo foco linhaDestino colunaDestino
                             return (novoTPassado, novoTPresente, novoTFuturo, foco, clones)
 
@@ -256,22 +278,18 @@ escolheModoDeJogo mensagem = do
             escolheModoDeJogo mensagem
 
 visualizarRegras :: () -> IO Bool
-visualizarRegras mensagem = do
+visualizarRegras mensagem = do 
     putStr "Deseja ver as regras do jogo?(s/n) "
     hFlush stdout
     resposta <- getLine
-    case resposta of
+    case resposta of 
         "s" -> return True
-        "n" -> return False
-        _   -> do
+        "n" -> return False 
+        _   -> do 
             putStrLn "Opção inválida. Tente novamente."
             visualizarRegras ()
 
 -- Exibe mensagem de fim de jogo
-{-finalizarJogo :: String -> IO ()
-finalizarJogo jogadorVencedor = do
-    imprimirTxt "src/Interface/fimDeJogo.txt"
-    putStrLn $ "O jogador " ++ jogadorVencedor ++ " venceu o jogo!"-}
 finalizarJogo :: String -> IO ()
 finalizarJogo jogadorVencedor = do
     imprimirTxt "src/Interface/fimDeJogo.txt"
