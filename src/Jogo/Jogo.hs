@@ -38,7 +38,7 @@ registrarJogadorUnico = do
     hFlush stdout
     nome <- getLine
     let jogador = jogador1  -- 🦊
-    putStrLn "Seu personagem será a 🦊."
+    putStrLn ("Seu personagem será a " ++ jogador1)
 
     return (nome, jogador)
 
