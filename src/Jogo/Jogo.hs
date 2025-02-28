@@ -20,13 +20,13 @@ registrarJogadores = do
     hFlush stdout
     nome1 <- getLine
     let jog1 = jogador1  -- 🦊
-    putStrLn "Seu personagem será a 🦊."
+    putStrLn ("Seu personagem será a " ++ jogador1)
 
     putStr "Jogador 2, digite seu nome: "
     hFlush stdout
     nome2 <- getLine
     let jog2 = jogador2  -- 🐰
-    putStrLn "Jogador 2 ficará com 🐰."
+    putStrLn ("Jogador 2 ficará com o " ++ jogador2)
 
     return ((nome1, jog1), (nome2, jog2))
 
