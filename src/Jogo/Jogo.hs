@@ -277,7 +277,7 @@ finalizarJogo :: String -> String -> String -> IO ()
 finalizarJogo jogadorVencedor nomeVencedor nomePerdedor = do
     imprimirTxt "src/Interface/fimDeJogo.txt"
     putStrLn $ "O jogador " ++ nomeVencedor ++ " (" ++ jogadorVencedor ++ ") venceu a rodada!"
-    let jogadorPerdedor = if jogadorVencedor == jogador1 then jogador2 else jogador1    
+    --let jogadorPerdedor = if jogadorVencedor == jogador1 then jogador2 else jogador1    
     atualizarRanking nomeVencedor nomePerdedor -- Atualiza pontos corretamente
     mostrarRanking
     iniciarTabuleiro  -- Reinicia o jogo
