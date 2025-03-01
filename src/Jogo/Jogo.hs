@@ -1,6 +1,6 @@
 module Jogo.Jogo where
     
-import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabuleiro4x4, inicializarTabuleiro, movimentoValido, verificarJogadorTabuleiro, verificarVitoria)
+import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabuleiro4x4, inicializarTabuleiro, movimentoValido, verificarJogadorTabuleiro, verificarVitoria, posicaoOcupada)
 import Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu)
 import Jogo.MovimentarPeca (movimentarPeca)
 import Jogo.ViagemTempo(defineViagem, posicaoLivre, viagem)
@@ -197,9 +197,14 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
                                     return (linhaDestinoBot, colunaDestinoBot)                               
                                 else obterJogadaDestino "src/Interface/plantar.txt" linhaOrigem colunaOrigem jogadorAtual
 
-                            (novoTPassado, novoTPresente, novoTFuturo) <- 
-                                plantarSemente tabuleiroSelecionado tPassado tPresente tFuturo foco linhaDestino colunaDestino
-                            return (novoTPassado, novoTPresente, novoTFuturo, foco, clones)
+                            if not(posicaoOcupada tabuleiroSelecionado linhaDestino colunaDestino)
+                                then do
+                                    (novoTPassado, novoTPresente, novoTFuturo) <- 
+                                        plantarSemente tabuleiroSelecionado tPassado tPresente tFuturo foco linhaDestino colunaDestino
+                                    return (novoTPassado, novoTPresente, novoTFuturo, foco, clones)
+                                else do
+                                    putStrLn "Local inválido! local já está ocupado"
+                                    jogar tPassado tPresente tFuturo jogadorAtual foco clones bot
 
                         _ -> do
                             putStrLn "Opção inválida!"
