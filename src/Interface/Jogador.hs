@@ -1,4 +1,4 @@
-module Interface.Jogador where
+module Interface.Jogador(jogadorNoFoco, obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu, jogadorNoFoco) where
 
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
@@ -146,3 +146,9 @@ exibirOpcaoMenu opcao
     | opcao == "m" = imprimirTxt "src/Interface/detalhamentoJogo.txt"
     | opcao == "j" = putStr ""
     | otherwise = putStr ""
+
+jogadorNoFoco :: Tabuleiro -> String -> String -> Bool
+jogadorNoFoco tabuleiro foco jogador = 
+    if foco `elem` ["passado", "presente", "futuro"]
+        then existeJogador tabuleiro jogador == 1
+        else False
