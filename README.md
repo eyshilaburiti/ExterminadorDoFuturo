@@ -1,5 +1,7 @@
 # O Exterminador do Futuro
-Uma implementação baseada no board game that time you killed me.
+Projeto desenvolvido com foco na programação funcional, utilizando Haskell, para a disciplina Paradigmas de Linguagem de Programação da Universidade Federal de Campina Grande (UFCG).
+
+Trata-se da implementação funcional de um jogo de tabuleiro interativo em terminal, baseado no board game *That Time You Killed Me*.
 
 ## Executar o projeto
 1. Instale e assegure-se de que o stack está funcionando em sua máquina
