@@ -41,9 +41,9 @@ rodadaJogador tPassado tPresente tFuturo jogadorAtual focoJogador1 focoJogador2 
     let foco = if jogadorAtual == jogador1 then focoJogador1 else focoJogador2
     let clones = if jogadorAtual == jogador1 then clonesJogador1 else clonesJogador2
 
-    putStr ("Seu foco na rodada atual é o " ++ foco)
+    -- putStr ("Seu foco na rodada atual é o " ++ foco)
 
-    putStrLn $ "\nTurno do jogador: " ++ jogadorAtual
+    -- putStrLn $ "\nTurno do jogador: " ++ jogadorAtual
     (novoTPassado1, novoTPresente1, novoTFuturo1, novoFoco1, novoClone1) <- jogar tPassado tPresente tFuturo jogadorAtual foco clones bot
     let vitoria1 = verificarVitoria novoTPassado1 novoTPresente1 novoTFuturo1 jogador1 jogador2
     if (fst vitoria1) then do
@@ -59,7 +59,10 @@ rodadaJogador tPassado tPresente tFuturo jogadorAtual focoJogador1 focoJogador2 
                 finalizarJogo (snd vitoria2)
                 return ()
             else do
+                imprimirTxt "src/Interface/delimitadorInicial.txt"
                 imprimirTabuleiros novoTPassado2 novoTPresente2 novoTFuturo2
+                exibeFoco novoFoco2
+                imprimirTxt "src/Interface/delimitadorFinal.txt"
 
                 novoFoco <- if ehBot jogadorAtual bot
                     then do
@@ -85,8 +88,13 @@ rodadaJogador tPassado tPresente tFuturo jogadorAtual focoJogador1 focoJogador2 
 
 jogar :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> Int -> Bool -> IO (Tabuleiro, Tabuleiro, Tabuleiro, String, Int)
 jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
-    putStrLn "\nTabuleiros atuais:"
+    imprimirTxt "src/Interface/delimitadorInicial.txt"
+    putStr ("- Foco atual: " ++ foco)
+    putStrLn $ "\n- Turno do jogador: " ++ jogadorAtual
+    putStrLn ""
     imprimirTabuleiros tPassado tPresente tFuturo
+    exibeFoco foco
+    imprimirTxt "src/Interface/delimitadorFinal.txt"
 
     let tabuleiroSelecionado
           | foco == "passado"  = tPassado
@@ -251,3 +259,10 @@ finalizarJogo jogadorVencedor = do
 
 ehBot :: String -> Bool -> Bool
 ehBot jogadorAtual bot = jogadorAtual == jogador2 && bot
+
+exibeFoco :: String -> IO ()
+exibeFoco foco
+    | foco == "passado" = imprimirTxt "src/Interface/passado.txt"
+    | foco == "presente" = imprimirTxt "src/Interface/presente.txt"
+    | foco == "futuro" = imprimirTxt "src/Interface/futuro.txt"
+    | otherwise = putStr ""

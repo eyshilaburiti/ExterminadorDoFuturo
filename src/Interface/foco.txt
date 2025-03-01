@@ -1,9 +1,10 @@
-════════════════════════════════════════════════════════════
-Escolher Foco  
-    - Selecione qual tabuleiro jogará na próxima rodada.
+═════════════════════════════════════════════════════════════════════════════════════════════
+Escolher Foco
+═════════════════════════════════════════════════════════════════════════════════════════════
+    Selecione qual tabuleiro jogará na próxima rodada.
 
     [presente] Seu próximo espaço temporal será o presente
     [passado] Seu próximo espaço temporal será o passado
     [futuro] Seu próximo espaço temporal será o passado
-════════════════════════════════════════════════════════════
+═════════════════════════════════════════════════════════════════════════════════════════════
 Escolha uma opção digitando o foco correspondente: 
