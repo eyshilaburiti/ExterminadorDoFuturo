@@ -213,11 +213,13 @@ jogadorNaPosicao tabuleiro linha coluna jogador =
     in valor == jogador
 
 -- Verifica vitória
-verificarVitoria :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> (Bool, String)
-verificarVitoria tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador1 jogador2 
-    | ((existeJogador tabuleiroPassado jogador1) + (existeJogador tabuleiroPresente jogador1) + (existeJogador tabuleiroFuturo jogador1)) == 1 = (True, jogador2)
-    | ((existeJogador tabuleiroPassado jogador2) + (existeJogador tabuleiroPresente jogador2) + (existeJogador tabuleiroFuturo jogador2)) == 1 = (True, jogador1)
-    | otherwise = (False, jogador1)
+verificarVitoria :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> String -> String -> (Bool, String, String)
+verificarVitoria tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador1 nome1 jogador2 nome2 
+    | ((existeJogador tabuleiroPassado jogador1) + (existeJogador tabuleiroPresente jogador1) + (existeJogador tabuleiroFuturo jogador1)) == 1 
+        = (True, jogador2, nome2)  -- Retorna o emoji e nome do vencedor
+    | ((existeJogador tabuleiroPassado jogador2) + (existeJogador tabuleiroPresente jogador2) + (existeJogador tabuleiroFuturo jogador2)) == 1 
+        = (True, jogador1, nome1)  -- Retorna o emoji e nome do vencedor
+    | otherwise = (False, jogador1, nome1) 
 
 -- Verifica se existe peça de jogador em um tabuleiro específico, retorna 1 se existe, caso contrário retorna 0
 existeJogador :: Tabuleiro -> String -> Int
