@@ -1,7 +1,7 @@
 module Jogo.Jogo where
     
 import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabuleiro4x4, inicializarTabuleiro, movimentoValido, verificarJogadorTabuleiro, verificarVitoria)
-import Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada)
+import Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu)
 import Jogo.MovimentarPeca (movimentarPeca)
 import Jogo.ViagemTempo(defineViagem, posicaoLivre, viagem)
 import Jogo.PlantarSemente (plantarSemente)
@@ -12,6 +12,11 @@ import Jogo.Bot(escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolher
 import Control.Concurrent (threadDelay)
 import Utils.Ranking (atualizarRanking, mostrarRanking)
 
+iniciarJogo :: IO ()
+iniciarJogo = do
+    imprimirTxt "src/Interface/exterminadorDoFuturo.txt"
+    iniciarTabuleiro
+
 iniciarTabuleiro :: IO () 
 iniciarTabuleiro = do
     let tabuleiro1 = inicializarTabuleiro tabuleiro4x4 0 0 jogador1
@@ -21,12 +26,13 @@ iniciarTabuleiro = do
     let tabuleiroPresente = tabuleiro
     let tabuleiroFuturo = tabuleiro
 
-    regras <- visualizarRegras ()
-    if regras == True then imprimirTxt "src/Interface/regras.txt"
-    else putStr ""
+    opcaoMenu <- escolherOpcaoMenu
+    exibirOpcaoMenu opcaoMenu
+    -- regras <- visualizarRegras ()
+    -- if regras == True then imprimirTxt "src/Interface/regras.txt"
+    -- else putStr ""
     
-
-    bot <- escolheModoDeJogo "src/Interface/modoDeJogo.txt"
+    bot <- escolheModoDeJogo
 
     rodadaJogador tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador1 "passado" "futuro" 0 0 bot
 
@@ -203,10 +209,9 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
             putStrLn "Erro: Jogador não encontrado!"
             jogar tPassado tPresente tFuturo jogadorAtual foco clones bot
 
-escolheModoDeJogo :: String -> IO Bool
-escolheModoDeJogo mensagem = do
-    imprimirTxt mensagem
-    putStrLn "Escolha uma opção digitando o modo correspondente (s para sozinho, d para dois jogadores): "
+escolheModoDeJogo :: IO Bool
+escolheModoDeJogo = do
+    imprimirTxt  "src/Interface/escolherModoDeJogo.txt"
     hFlush stdout
     modo <- getLine
     case modo of
@@ -214,7 +219,7 @@ escolheModoDeJogo mensagem = do
         "d" -> return False
         _   -> do
             putStrLn "Opção inválida. Tente novamente."
-            escolheModoDeJogo mensagem
+            escolheModoDeJogo
 
 visualizarRegras :: () -> IO Bool
 visualizarRegras mensagem = do 

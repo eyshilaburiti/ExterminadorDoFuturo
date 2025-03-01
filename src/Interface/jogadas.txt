@@ -1,10 +1,15 @@
 ═════════════════════════════════════════════════════════════════════════════════════════════
-Mudar de espaço temporal 
+JOGADAS DISPONÍVEIS  
 ═════════════════════════════════════════════════════════════════════════════════════════════
-    Selecione qual tabuleiro você deseja ir.
 
-    [presente] Mudar para o presente
-    [passado] Mudar para o passado
-    [futuro] Mudar para o futuro
+[M] Mover Peça      
+      - Ande uma casa no tabuleiro (sem diagonais).
+
+[P] Plantar Semente  
+      - Plante uma semente no tabuleiro.
+
+[V] Viajar no Tempo  
+      - Mude para outro espaço temporal.
+
 ═════════════════════════════════════════════════════════════════════════════════════════════
-Escolha uma opção digitando o espaço temporal correspondente: 
+Escolha uma opção digitando a letra correspondente: 

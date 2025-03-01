@@ -1,7 +1,7 @@
 module Main (main) where
 
-import Jogo.Jogo (iniciarTabuleiro)
+import Jogo.Jogo (iniciarJogo)
 
 main :: IO ()
 main = do
-    iniciarTabuleiro
+    iniciarJogo

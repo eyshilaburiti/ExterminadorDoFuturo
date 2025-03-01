@@ -1,10 +1,9 @@
 ═════════════════════════════════════════════════════════════════════════════════════════════
-Mudar de espaço temporal 
+Escolher Modo de Jogo
 ═════════════════════════════════════════════════════════════════════════════════════════════
-    Selecione qual tabuleiro você deseja ir.
+    Selecione como deseja jogar nesta partida.
 
-    [presente] Mudar para o presente
-    [passado] Mudar para o passado
-    [futuro] Mudar para o futuro
+    [s] Jogar sozinho contra o Bot
+    [d] Jogar em dupla contra outro jogador
 ═════════════════════════════════════════════════════════════════════════════════════════════
-Escolha uma opção digitando o espaço temporal correspondente: 
+Escolha uma opção digitando o modo correspondente (s para sozinho, d para dois jogadores): 

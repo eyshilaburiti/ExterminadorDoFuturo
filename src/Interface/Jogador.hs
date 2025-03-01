@@ -8,7 +8,7 @@ import Data.Char (toLower)  -- Importa a função toLower para converter caracte
 
 escolherJogada :: IO String
 escolherJogada = do 
-    imprimirTxt "src/Interface/menu.txt"
+    imprimirTxt "src/Interface/jogadas.txt"
     hFlush stdout
     escolha <- getLine
     let escolhaMinuscula = map toLower escolha  -- Converte a entrada para minúscula
@@ -123,3 +123,26 @@ definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jo
         _ -> do
             putStrLn "Opção Inválida"
             definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
+
+escolherOpcaoMenu :: IO String
+escolherOpcaoMenu = do 
+    imprimirTxt "src/Interface/menu.txt"
+    hFlush stdout
+    escolha <- getLine
+    let escolhaMinuscula = map toLower escolha  -- Converte a entrada para minúscula
+    if escolhaMinuscula == "d" then do
+        return escolhaMinuscula
+    else if escolhaMinuscula == "m" then do
+        return escolhaMinuscula
+    else if escolhaMinuscula == "j" then do
+        return escolhaMinuscula
+    else do 
+        putStrLn "Entrada inválida!"
+        escolherOpcaoMenu
+
+exibirOpcaoMenu :: String -> IO ()
+exibirOpcaoMenu opcao
+    | opcao == "d" = imprimirTxt "src/Interface/detalhamentoJogo.txt"
+    | opcao == "m" = imprimirTxt "src/Interface/detalhamentoJogo.txt"
+    | opcao == "j" = putStr ""
+    | otherwise = putStr ""

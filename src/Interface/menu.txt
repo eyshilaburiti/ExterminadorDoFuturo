@@ -1,15 +1,10 @@
-════════════════════════════════════════════════════════════
-JOGADAS DISPONÍVEIS  
-════════════════════════════════════════════════════════════
+═════════════════════════════════════════════════════════════════════════════════════════════
+MENU
+═════════════════════════════════════════════════════════════════════════════════════════════
 
-(M) Mover Peça      
-      - Ande uma casa no tabuleiro (sem diagonais).
+[d] Detalhamento do jogo
+[m] Modos de Jogo
+[j] Jogar
 
-(P) Plantar Semente  
-      - Plante uma semente no tabuleiro.
-
-(V) Viajar no Tempo  
-      - Mude para outro espaço temporal.
-
-════════════════════════════════════════════════════════════
-Escolha uma opção digitando a letra correspondente: 
+═════════════════════════════════════════════════════════════════════════════════════════════
+Escolha uma opção digitando a tecla correspondente: 
