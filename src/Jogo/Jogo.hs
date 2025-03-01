@@ -10,6 +10,7 @@ import Utils.ImprimirTxt (imprimirTxt)
 import System.IO (hFlush, stdout)
 import Jogo.Bot(escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot)
 import Control.Concurrent (threadDelay)
+import Utils.Ranking (atualizarRanking, mostrarRanking)
 
 iniciarTabuleiro :: IO () 
 iniciarTabuleiro = do
@@ -231,7 +232,12 @@ visualizarRegras mensagem = do
 finalizarJogo :: String -> IO ()
 finalizarJogo jogadorVencedor = do
     imprimirTxt "src/Interface/fimDeJogo.txt"
-    putStrLn $ "O jogador " ++ jogadorVencedor ++ " venceu o jogo!"
+    let jogadorPerdedor = if jogadorVencedor == jogador1 then jogador2 else jogador1
+    putStrLn $ "O jogador " ++ jogadorVencedor ++ " venceu a rodada!"
+    atualizarRanking jogadorVencedor jogadorPerdedor  -- Atualiza pontos corretamente
+    mostrarRanking
+    -- adicionar função intermediária que verifica se o jogador deseja continuar a jogar!!!!!!! 
+    iniciarTabuleiro  -- Reinicia o jogo
 
 ehBot :: String -> Bool -> Bool
 ehBot jogadorAtual bot = jogadorAtual == jogador2 && bot
