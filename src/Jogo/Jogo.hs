@@ -4,8 +4,7 @@ import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabule
 import Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu)
 import Jogo.MovimentarPeca (movimentarPeca)
 import Jogo.ViagemTempo(defineViagem, posicaoLivre, viagem)
-import Jogo.PlantarSemente (plantarSemente)
-import Jogo.RemoveSemente (removeSemente)
+import Jogo.ControladorPlantas (plantarSemente)
 import Utils.ImprimirTxt (imprimirTxt)
 import System.IO (hFlush, stdout)
 import Jogo.Bot(escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot)
@@ -28,10 +27,6 @@ iniciarTabuleiro = do
 
     opcaoMenu <- escolherOpcaoMenu
     exibirOpcaoMenu opcaoMenu
-    -- regras <- visualizarRegras ()
-    -- if regras == True then imprimirTxt "src/Interface/regras.txt"
-    -- else putStr ""
-    
     bot <- escolheModoDeJogo
 
     rodadaJogador tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador1 "passado" "futuro" 0 0 bot
@@ -105,6 +100,7 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
                 else escolherJogada
 
 
+
             -- Se a jogada for "v" (viagem no tempo), definir o destino da viagem
             novoTempo <- if jogada == "v"
                 then if ehBot jogadorAtual bot
@@ -144,25 +140,7 @@ jogar tPassado tPresente tFuturo jogadorAtual foco clones bot = do
                                         then putStrLn $ "O bot viajou para o " ++ novoTempo
                                         else putStrLn ""
                                     return (novoTPassado, novoTPresente, novoTFuturo, novoTempo, novosClones)
-                        
-                        {-"m" -> do
-                            -- se o jogador for um bot ele escolhe sua coluna de destino
-                            (linhaDestino, colunaDestino) <- if ehBot jogadorAtual bot
-                                then do
-                                    (linhaDestinoBot, colunaDestinoBot) <- escolherDestinoBot (linhaOrigem, colunaOrigem)
-                                    threadDelay (2 * 1000000)  -- 2 seconds
-                                    putStrLn $ "Destino escolhido pelo bot: " ++ show (linhaDestinoBot + 1, colunaDestinoBot + 1)
-                                    return (linhaDestinoBot, colunaDestinoBot)                               
-                                else obterJogadaDestino "src/Interface/movimento.txt" linhaOrigem colunaOrigem jogadorAtual
-
-                            if movimentoValido tabuleiroSelecionado (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino) 
-                                then do
-                                    (novoTPassado, novoTPresente, novoTFuturo) <- 
-                                        movimentarPeca tabuleiroSelecionado tPassado tPresente tFuturo jogadorAtual foco linhaOrigem colunaOrigem linhaDestino colunaDestino
-                                    return (novoTPassado, novoTPresente, novoTFuturo, foco, clones)
-                                else do
-                                    putStrLn "Movimento inválido! Você só pode se mover uma casa na horizontal ou na vertical."
-                                    jogar tPassado tPresente tFuturo jogadorAtual foco clones bot-}
+                                    
                         "m" -> do
                             -- se o jogador for um bot ele escolhe sua coluna de destino
                             (linhaDestino, colunaDestino) <- if ehBot jogadorAtual bot
