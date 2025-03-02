@@ -146,3 +146,9 @@ exibirOpcaoMenu opcao
     | opcao == "m" = imprimirTxt "src/Interface/detalhamentoJogo.txt"
     | opcao == "j" = putStr ""
     | otherwise = putStr ""
+
+jogadorNoFoco :: Tabuleiro -> String -> String -> Bool
+jogadorNoFoco tabuleiro foco jogador = 
+    if foco `elem` ["passado", "presente", "futuro"]
+        then existeJogador tabuleiro jogador == 1
+        else False
