@@ -3,8 +3,8 @@ Escolher Foco
 ═════════════════════════════════════════════════════════════════════════════════════════════
     Selecione qual tabuleiro jogará na próxima rodada.
 
-    [presente] Seu próximo espaço temporal será o presente
-    [passado] Seu próximo espaço temporal será o passado
-    [futuro] Seu próximo espaço temporal será o passado
+    [s] Seu próximo espaço temporal será o passado
+    [p] Seu próximo espaço temporal será o presente
+    [f] Seu próximo espaço temporal será o futuro
 ═════════════════════════════════════════════════════════════════════════════════════════════
 Escolha uma opção digitando o foco correspondente: 

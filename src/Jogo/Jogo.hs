@@ -11,13 +11,12 @@ import System.IO (hFlush, stdout)
 import Jogo.Bot(escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot)
 import Control.Concurrent (threadDelay)
 import Utils.Ranking (atualizarRanking, mostrarRanking)
-
+import Data.Char (toLower)  -- Importa a função toLower para converter caracteres para minúscula
 
 iniciarJogo :: IO ()
 iniciarJogo = do
     imprimirTxt "src/Interface/exterminadorDoFuturo.txt"
     iniciarTabuleiro
-
 
 registrarJogadores :: IO ((String, String), (String, String))
 registrarJogadores = do
@@ -26,28 +25,31 @@ registrarJogadores = do
     putStr "Jogador 1, digite seu nome: "
     hFlush stdout
     nome1 <- getLine
+    let nome1Min = map toLower nome1  
     let jog1 = jogador1  -- 🦊
     putStrLn ("Seu personagem será a " ++ jogador1)
 
     putStr "Jogador 2, digite seu nome: "
     hFlush stdout
     nome2 <- getLine
+    let nome2Min = map toLower nome2 
     let jog2 = jogador2  -- 🐰
     putStrLn ("Jogador 2 ficará com o " ++ jogador2)
 
-    return ((nome1, jog1), (nome2, jog2))
+    return ((nome1Min, jog1), (nome2Min, jog2))
+
 
 registrarJogadorUnico :: IO (String, String)
 registrarJogadorUnico = do
     putStrLn "\nRegistro do jogador!"
-
     putStr "Digite seu nome: "
     hFlush stdout
     nome <- getLine
+    let nomeMin = map toLower nome
     let jogador = jogador1  -- 🦊
     putStrLn ("Seu personagem será a " ++ jogador1)
 
-    return (nome, jogador)
+    return (nomeMin, jogador)
 
 iniciarTabuleiro :: IO () 
 iniciarTabuleiro = do
@@ -72,7 +74,7 @@ iniciarTabuleiro = do
         rodadaJogador tabuleiroPassado tabuleiroPresente tabuleiroFuturo jog1 nome1 nome1 jog1 nome2 jog2 "passado" "futuro" 0 0 bot
     else do
         (nome1, jog1) <- registrarJogadorUnico
-        let nome2 = "Bot"
+        let nome2 = "bot"
         let jog2 = jogador2 
         --let (tabuleiroPassado, tabuleiroPresente, tabuleiroFuturo) = inicioTab jog1 jog2
         rodadaJogador tabuleiroPassado tabuleiroPresente tabuleiroFuturo jog1 nome1 nome1 jog1 nome2 jog2 "passado" "futuro" 0 0 bot
@@ -269,7 +271,8 @@ escolheModoDeJogo = do
     imprimirTxt  "src/Interface/escolherModoDeJogo.txt"
     hFlush stdout
     modo <- getLine
-    case modo of
+    let modoMinuscula = map toLower modo  -- Converte a entrada para minúscula
+    case modoMinuscula of
         "s" -> return True
         "d" -> return False
         _   -> do
@@ -281,7 +284,8 @@ visualizarRegras mensagem = do
     putStr "Deseja ver as regras do jogo?(s/n) "
     hFlush stdout
     resposta <- getLine
-    case resposta of 
+    let respMinuscula = map toLower resposta  -- Converte a entrada para minúscula
+    case respMinuscula of 
         "s" -> return True
         "n" -> return False 
         _   -> do 

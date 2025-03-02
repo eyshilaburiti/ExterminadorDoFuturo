@@ -43,22 +43,23 @@ obterJogadaDestino caminhoArquivo linha coluna jogador = do
     putStr "Escolha uma opção digitando a tecla correspondente: "
     hFlush stdout
     movimento <- getLine
-    if movimento == "w" then
+    let movMinuscula = map toLower movimento  -- Converte a entrada para minúscula
+    if movMinuscula == "w" then
         if linha == 0 then do
             putStrLn "Movimento inválido"
             obterJogadaDestino caminhoArquivo linha coluna jogador
         else return (linha - 1, coluna)
-    else if movimento == "s" then
+    else if movMinuscula == "s" then
         if linha == 3 then do
             putStrLn "Movimento inválido"
             obterJogadaDestino caminhoArquivo linha coluna jogador
         else return (linha + 1, coluna)
-    else if movimento == "a" then
+    else if movMinuscula == "a" then
         if coluna == 0 then do
             putStrLn "Movimento inválido"
             obterJogadaDestino caminhoArquivo linha coluna jogador
         else return (linha, coluna - 1)
-    else if movimento == "d" then
+    else if movMinuscula == "d" then
         if coluna == 3 then do
             putStrLn "Movimento inválido"
             obterJogadaDestino caminhoArquivo linha coluna jogador
@@ -92,7 +93,7 @@ obterLocalSemente = do
     return (linha, coluna)
 
 -- Função que define o foco do jogador
-definirFoco :: String -> Tabuleiro -> Tabuleiro -> Tabuleiro-> String -> String -> IO String 
+{-definirFoco :: String -> Tabuleiro -> Tabuleiro -> Tabuleiro-> String -> String -> IO String 
 definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior = do
     imprimirTxt caminhoArquivo
     hFlush stdout
@@ -123,6 +124,47 @@ definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jo
         _ -> do
             putStrLn "Opção Inválida"
             definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
+-}
+
+-- Função que define o foco do jogador
+definirFoco :: String -> Tabuleiro -> Tabuleiro -> Tabuleiro-> String -> String -> IO String 
+definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior = do
+    imprimirTxt caminhoArquivo
+    hFlush stdout
+    foco <- getLine
+    let focoMinusculo = map toLower foco  -- Converte a entrada para minúscula
+    let focoTraduzido = case focoMinusculo of
+            "s" -> "passado"
+            "p" -> "presente"
+            "f" -> "futuro"
+            _    -> "invalido"
+
+    case focoTraduzido of
+        "passado" -> 
+            if existeJogador tabuleiroPassado jogador == 1 
+                then return focoTraduzido
+                else do
+                    putStrLn "Jogador não encontrado nesse tempo."
+                    definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
+
+        "presente" -> 
+            if existeJogador tabuleiroPresente jogador == 1 
+                then return focoTraduzido
+                else do
+                    putStrLn "Jogador não encontrado nesse tempo."
+                    definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
+
+        "futuro" -> 
+            if existeJogador tabuleiroFuturo jogador == 1 
+                then return focoTraduzido
+                else do
+                    putStrLn "Jogador não encontrado nesse tempo."
+                    definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
+
+        _ -> do
+            putStrLn "Opção Inválida"
+            definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
+
 
 escolherOpcaoMenu :: IO String
 escolherOpcaoMenu = do 

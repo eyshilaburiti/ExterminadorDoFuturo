@@ -3,8 +3,8 @@ Mudar de espaço temporal
 ═════════════════════════════════════════════════════════════════════════════════════════════
     Selecione qual tabuleiro você deseja ir.
 
-    [presente] Mudar para o presente
-    [passado] Mudar para o passado
-    [futuro] Mudar para o futuro
+    [s] Mudar para o passado
+    [p] Mudar para o presente
+    [f] Mudar para o futuro
 ═════════════════════════════════════════════════════════════════════════════════════════════
 Escolha uma opção digitando o espaço temporal correspondente: 

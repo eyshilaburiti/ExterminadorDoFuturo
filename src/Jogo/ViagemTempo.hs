@@ -3,6 +3,7 @@ module Jogo.ViagemTempo (defineViagem, posicaoLivre, viagem) where
 import System.IO (hFlush, stdout)
 import Utils.ImprimirTxt (imprimirTxt)
 import Jogo.Tabuleiro (Tabuleiro, atualizarTabuleiroViagem, selecionarTabuleiro, espacoVazio)
+import Data.Char (toLower)  -- Importa a função toLower para converter caracteres para minúscula
 
 viagem :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> Int -> Int -> Int -> String -> (Tabuleiro, Tabuleiro, Tabuleiro, Int)
 viagem tPassado tPresente tFuturo novoTempo tempoAtual linha coluna clones jogadorAtual =
@@ -27,7 +28,13 @@ defineViagem :: String -> String -> Int -> IO String
 defineViagem caminhoArquivo tempoAtual clones = do 
     imprimirTxt caminhoArquivo
     hFlush stdout
-    novoTempo <- getLine
+    entrada <- getLine
+    let entradaMinuscula = map toLower entrada  -- Converte a entrada para minúscula
+    let novoTempo = case entradaMinuscula of
+            "s" -> "passado"
+            "p" -> "presente"
+            "f" -> "futuro"
+            _    -> "invalido"
 
     if novoTempo == tempoAtual then do 
         putStrLn "Lembre-se que não podemos viajar para o tempo que estamos atualmente"
