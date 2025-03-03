@@ -2,6 +2,7 @@ module Jogo.Bot (escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolhe
 
 import System.Random (randomRIO)
 import Jogo.Tabuleiro (Tabuleiro, verificarJogadorTabuleiro, jogadorNaPosicao, existeJogador, obtemCelula, posicaoOcupada, arbusto, arvore, espacoVazio, jogador1, jogador2, novaPosicaoEmpurrado)
+import Jogo.Tabuleiro (Tabuleiro, verificarJogadorTabuleiro, jogadorNaPosicao, existeJogador, obtemCelula, posicaoOcupada, arbusto, arvore, espacoVazio, jogador1, jogador2, novaPosicaoEmpurrado)
 
 -- | O bot escolhe uma jogada: "m" para mover, "p" para plantar, "v" para viajar
 escolherJogadaBot :: Tabuleiro -> (Int, Int) -> String -> IO String
@@ -60,7 +61,22 @@ escolherDestinoBot tabuleiro (linhaOrigem, colunaOrigem) jogador = do
         else do
             indice <- randomRIO (0, length destinos - 1)
             return (destinos !! indice)
+-- Atualiza a lógica do bot para priorizar matar oponente
+escolherDestinoBot :: Tabuleiro -> (Int, Int) -> String -> IO (Int, Int)
+escolherDestinoBot tabuleiro (linhaOrigem, colunaOrigem) jogador = do
+    let destinos = destinosValidos (linhaOrigem, colunaOrigem)
+    let destinosMortaisDisponiveis = destinosMortais tabuleiro (linhaOrigem, colunaOrigem) jogador destinos
 
+    if not (null destinosMortaisDisponiveis)
+        then do
+            indice <- randomRIO (0, length destinosMortaisDisponiveis - 1)
+            return (destinosMortaisDisponiveis !! indice)
+        else do
+            indice <- randomRIO (0, length destinos - 1)
+            return (destinos !! indice)
+
+
+-- Destinos válidos ao redor da peça (cima, baixo, esquerda, direita)
 
 -- Destinos válidos ao redor da peça (cima, baixo, esquerda, direita)
 destinosValidos :: (Int, Int) -> [(Int, Int)]
@@ -97,6 +113,36 @@ escolherFocoBot tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador foco 
         _ -> do
             putStrLn "Opção Inválida"
             escolherFocoBot tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador foco
+
+
+-- Verifica se algum dos possíveis movimentos levam a morte 
+movimentoLevaMorte :: Tabuleiro -> (Int, Int) -> (Int, Int) -> String -> Bool
+movimentoLevaMorte tabuleiro (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino) jogador =
+    let posicaoDestino = obtemCelula tabuleiro linhaDestino colunaDestino
+    in case novaPosicaoEmpurrado (linhaDestino, colunaDestino) (linhaOrigem, colunaOrigem) of
+            Nothing -> posicaoDestino /= espacoVazio && posicaoDestino /= jogador -- Empurrar para fora do tabuleiro
+            Just (linhaEmpurrado, colunaEmpurrado) ->
+                let ocupanteEmpurrado = obtemCelula tabuleiro linhaEmpurrado colunaEmpurrado
+                in
+                    -- Matar ao empurrar jogador no arbusto
+                    (posicaoDestino /= espacoVazio && posicaoDestino /= jogador && posicaoDestino /= arvore && posicaoDestino /= arbusto && ocupanteEmpurrado == arbusto)
+                
+                    -- Matar ao empurrar árvore em um jogador
+                    || (posicaoDestino == arvore && ocupanteEmpurrado /= espacoVazio && ocupanteEmpurrado /= arvore && ocupanteEmpurrado /= jogador)
+                
+                    -- Paradoxo: empurrar um jogador contra outro jogador
+                    || (posicaoDestino /= espacoVazio && posicaoDestino /= jogador &&
+                        ocupanteEmpurrado /= espacoVazio && ocupanteEmpurrado /= jogador)
+
+-- Seleciona destinos letais para o bot
+destinosMortais :: Tabuleiro -> (Int, Int) -> String -> [(Int, Int)] -> [(Int, Int)]
+destinosMortais tabuleiro (linha, coluna) jogador  destinosValidos=
+    filter (\destino -> movimentoLevaMorte tabuleiro (linha, coluna) destino jogador) destinosValidos
+
+
+
+dentroDoTabuleiro :: (Int, Int) -> Bool
+dentroDoTabuleiro (linha, coluna) = linha >= 0 && linha < 4 && coluna >= 0 && coluna < 4
 
 
 -- Verifica se algum dos possíveis movimentos levam a morte 

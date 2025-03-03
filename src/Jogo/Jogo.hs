@@ -2,6 +2,8 @@ module Jogo.Jogo where
     
 import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabuleiro4x4, inicializarTabuleiro, movimentoValido, verificarJogadorTabuleiro, verificarVitoria, posicaoOcupada, selecionarTabuleiro)
 import Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu, jogadorNoFoco)
+import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabuleiro4x4, inicializarTabuleiro, movimentoValido, verificarJogadorTabuleiro, verificarVitoria, posicaoOcupada, selecionarTabuleiro)
+import Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu, jogadorNoFoco)
 import Jogo.MovimentarPeca (movimentarPeca)
 import Jogo.ViagemTempo(defineViagem, posicaoLivre, viagem)
 import Jogo.PlantarSemente (plantarSemente)
@@ -188,9 +190,11 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
                 then if ehBot jogadorAtual bot
                     then do
                         tempoBot <- escolherTempoBot novoFoco
+                        tempoBot <- escolherTempoBot novoFoco
                         threadDelay (2 * 1000000)  -- 2 seconds
                         putStrLn $ "Tempo escolhido pelo bot: " ++ tempoBot
                         return tempoBot
+                    else defineViagem "src/Interface/viagem.txt" novoFoco clones
                     else defineViagem "src/Interface/viagem.txt" novoFoco clones
                 else return ""  -- Retorna string vazia para outros casos
 

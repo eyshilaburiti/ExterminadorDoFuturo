@@ -1,4 +1,4 @@
-module Interface.Jogador where
+module Interface.Jogador(jogadorNoFoco, obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu, jogadorNoFoco) where
 
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
