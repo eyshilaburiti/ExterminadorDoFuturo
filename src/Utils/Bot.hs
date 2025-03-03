@@ -1,4 +1,4 @@
-module Jogo.Bot (escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot) where
+module Utils.Bot (escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot) where
 
 import System.Random (randomRIO)
 import Jogo.Tabuleiro (Tabuleiro, verificarJogadorTabuleiro, jogadorNaPosicao, existeJogador, obtemCelula, posicaoOcupada, arbusto, arvore, espacoVazio, jogador1, jogador2, novaPosicaoEmpurrado)

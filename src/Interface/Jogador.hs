@@ -190,7 +190,7 @@ escolherOpcaoMenu = do
 exibirOpcaoMenu :: String -> IO ()
 exibirOpcaoMenu opcao
     | opcao == "d" = imprimirTxt "src/Interface/detalhamentoJogo.txt"
-    | opcao == "m" = imprimirTxt "src/Interface/detalhamentoJogo.txt"
+    | opcao == "m" = imprimirTxt "src/Interface/modoDeJogo.txt"
     | opcao == "r" = mostrarRanking
     | opcao == "j" = putStr ""
     | otherwise = putStr ""

@@ -26,12 +26,12 @@ source-repository head
 library
   exposed-modules:
       Interface.Jogador
-      Jogo.Bot
       Jogo.ControladorPlantas
       Jogo.Jogo
       Jogo.MovimentarPeca
       Jogo.Tabuleiro
       Jogo.ViagemTempo
+      Utils.Bot
       Utils.ImprimirTxt
       Utils.Ranking
   other-modules:

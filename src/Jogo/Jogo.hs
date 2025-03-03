@@ -7,7 +7,7 @@ import Jogo.ViagemTempo(defineViagem, posicaoLivre, viagem)
 import Jogo.ControladorPlantas (plantarSemente)
 import Utils.ImprimirTxt (imprimirTxt)
 import System.IO (hFlush, stdout)
-import Jogo.Bot(escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot)
+import Utils.Bot (escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot)
 import Control.Concurrent (threadDelay)
 import Utils.Ranking (atualizarRanking, mostrarRanking)
 import Data.Char (toLower)  -- Importa a função toLower para converter caracteres para minúscula
@@ -281,19 +281,6 @@ escolheModoDeJogo = do
         _   -> do
             putStrLn "\x2757 Opção inválida. Tente novamente."
             escolheModoDeJogo
-
-visualizarRegras :: () -> IO Bool
-visualizarRegras mensagem = do 
-    putStr "Deseja ver as regras do jogo?(s/n) "
-    hFlush stdout
-    resposta <- getLine
-    let respMinuscula = map toLower resposta  -- Converte a entrada para minúscula
-    case respMinuscula of 
-        "s" -> return True
-        "n" -> return False 
-        _   -> do 
-            putStrLn "\x2757 Opção inválida. Tente novamente."
-            visualizarRegras ()
 
 -- Exibe mensagem de fim de jogo
 finalizarJogo :: String -> String -> String -> IO ()
