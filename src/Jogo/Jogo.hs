@@ -11,6 +11,7 @@ import Jogo.Bot(escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolher
 import Control.Concurrent (threadDelay)
 import Utils.Ranking (atualizarRanking, mostrarRanking)
 import Data.Char (toLower)  -- Importa a função toLower para converter caracteres para minúscula
+import System.Exit (exitSuccess)
 
 iniciarJogo :: IO ()
 iniciarJogo = do
@@ -74,6 +75,7 @@ iniciarTabuleiro = do
             let jog2 = jogador2 
             --let (tabuleiroPassado, tabuleiroPresente, tabuleiroFuturo) = inicioTab jog1 jog2
             rodadaJogador tabuleiroPassado tabuleiroPresente tabuleiroFuturo jog1 nome1 nome1 jog1 nome2 jog2 "passado" "futuro" 0 0 bot
+    else if opcaoMenu == "s" then exitSuccess
     else do 
         iniciarTabuleiro
 
