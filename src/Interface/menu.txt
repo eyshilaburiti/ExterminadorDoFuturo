@@ -5,7 +5,7 @@ MENU
 [d] Detalhamento do jogo
 [m] Modos de Jogo
 [j] Jogar
-[r] Mostrar Hanking
+[r] Mostrar Ranking
 [s] Sair do jogo
 
 ═════════════════════════════════════════════════════════════════════════════════════════════

@@ -25,19 +25,21 @@ registrarJogadores = do
     putStr "Jogador 1, digite seu nome: "
     hFlush stdout
     nome1 <- getLine
-    let nome1Min = map toLower nome1  
-    let jog1 = jogador1  -- 🦊
+    let nome1Min = removerEspacos nome1  -- Remove todos os espaços e converte para minúsculo
+    let jog1 = jogador1
     putStrLn ("Seu personagem será a " ++ jogador1)
 
     putStr "Jogador 2, digite seu nome: "
     hFlush stdout
     nome2 <- getLine
-    let nome2Min = map toLower nome2 
-    let jog2 = jogador2  -- 🐰
+    let nome2Min = removerEspacos nome2
+    let jog2 = jogador2
     putStrLn ("Jogador 2 ficará com o " ++ jogador2)
 
     return ((nome1Min, jog1), (nome2Min, jog2))
 
+removerEspacos :: String -> String
+removerEspacos = filter (/= ' ') . map toLower
 
 registrarJogadorUnico :: IO (String, String)
 registrarJogadorUnico = do
@@ -45,8 +47,8 @@ registrarJogadorUnico = do
     putStr "Digite seu nome: "
     hFlush stdout
     nome <- getLine
-    let nomeMin = map toLower nome
-    let jogador = jogador1  -- 🦊
+    let nomeMin = removerEspacos nome
+    let jogador = jogador1 
     putStrLn ("Seu personagem será a " ++ jogador1)
 
     return (nomeMin, jogador)
@@ -274,7 +276,8 @@ escolheModoDeJogo = do
     imprimirTxt  "src/Interface/escolherModoDeJogo.txt"
     hFlush stdout
     modo <- getLine
-    let modoMinuscula = map toLower modo  -- Converte a entrada para minúscula
+    let modoMinuscula = unwords . words $ map toLower modo
+
     case modoMinuscula of
         "s" -> return True
         "d" -> return False
@@ -287,8 +290,7 @@ finalizarJogo :: String -> String -> String -> IO ()
 finalizarJogo jogadorVencedor nomeVencedor nomePerdedor = do
     imprimirTxt "src/Interface/fimDeJogo.txt"
     putStrLn $ "O jogador " ++ nomeVencedor ++ " (" ++ jogadorVencedor ++ ") venceu a rodada! \x1F3C6"
-    --let jogadorPerdedor = if jogadorVencedor == jogador1 then jogador2 else jogador1    
-    atualizarRanking nomeVencedor nomePerdedor -- Atualiza pontos corretamente
+    atualizarRanking nomeVencedor nomePerdedor 
     mostrarRanking
     iniciarTabuleiro  -- Reinicia o jogo
 

@@ -12,7 +12,7 @@ escolherJogada = do
     imprimirTxt "src/Interface/jogadas.txt"
     hFlush stdout
     escolha <- getLine
-    let escolhaMinuscula = map toLower escolha  -- Converte a entrada para minúscula
+    let escolhaMinuscula = unwords . words $ map toLower escolha 
     if escolhaMinuscula == "m" then do
         return escolhaMinuscula
     else if escolhaMinuscula == "p" then do
@@ -44,7 +44,7 @@ obterJogadaDestino caminhoArquivo linha coluna jogador = do
     putStr "Escolha uma opção digitando a tecla correspondente: "
     hFlush stdout
     movimento <- getLine
-    let movMinuscula = map toLower movimento  -- Converte a entrada para minúscula
+    let movMinuscula = unwords . words $ map toLower movimento 
     if movMinuscula == "w" then
         if linha == 0 then do
             putStrLn "\x274C Movimento inválido"
@@ -99,7 +99,7 @@ definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jo
     imprimirTxt caminhoArquivo
     hFlush stdout
     foco <- getLine
-    let focoMinusculo = map toLower foco  -- Converte a entrada para minúscula
+    let focoMinusculo = unwords . words $ map toLower foco 
     let focoTraduzido = case focoMinusculo of
             "s" -> "passado"
             "p" -> "presente"
@@ -138,7 +138,7 @@ escolherOpcaoMenu = do
     imprimirTxt "src/Interface/menu.txt"
     hFlush stdout
     escolha <- getLine
-    let escolhaMinuscula = map toLower escolha  -- Converte a entrada para minúscula
+    let escolhaMinuscula = unwords . words $ map toLower escolha
     if escolhaMinuscula == "d" then do
         return escolhaMinuscula
     else if escolhaMinuscula == "m" then do
