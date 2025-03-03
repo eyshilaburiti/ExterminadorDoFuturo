@@ -1,11 +1,11 @@
-module Interface.Jogador(jogadorNoFoco, obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu, jogadorNoFoco) where
+module Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu, jogadorNoFoco) where
 
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
 import Utils.ImprimirTxt (imprimirTxt)
 import Utils.Ranking (mostrarRanking)
 import Jogo.Tabuleiro(jogadorNaPosicao, existeJogador, Tabuleiro)
-import Data.Char (toLower)  -- Importa a função toLower para converter caracteres para minúscula
+import Data.Char (toLower)
 
 escolherJogada :: IO String
 escolherJogada = do 
@@ -92,40 +92,6 @@ obterLocalSemente = do
     linha <- obterPosicao "Digite a linha onde deseja plantar a semente: (1 a 4)"
     coluna <- obterPosicao "Digite a coluna onde deseja plantar a semente: (1 a 4)"
     return (linha, coluna)
-
--- Função que define o foco do jogador
-{-definirFoco :: String -> Tabuleiro -> Tabuleiro -> Tabuleiro-> String -> String -> IO String 
-definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior = do
-    imprimirTxt caminhoArquivo
-    hFlush stdout
-    foco <- getLine
-
-    case foco of
-        "passado" -> 
-            if (existeJogador tabuleiroPassado jogador) == 1 
-                then return foco
-                else do
-                    putStrLn "Jogador não encontrado nesse tempo."
-                    definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
-
-        "presente" -> 
-            if (existeJogador tabuleiroPresente jogador) == 1 
-                then return foco
-                else do
-                    putStrLn "Jogador não encontrado nesse tempo."
-                    definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
-
-        "futuro" -> 
-            if (existeJogador tabuleiroFuturo jogador) == 1 
-                then return foco
-                else do
-                    putStrLn "Jogador não encontrado nesse tempo."
-                    definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
-
-        _ -> do
-            putStrLn "Opção Inválida"
-            definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
--}
 
 -- Função que define o foco do jogador
 definirFoco :: String -> Tabuleiro -> Tabuleiro -> Tabuleiro-> String -> String -> IO String 

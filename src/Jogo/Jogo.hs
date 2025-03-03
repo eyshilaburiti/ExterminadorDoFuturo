@@ -1,4 +1,4 @@
-module Jogo.Jogo where
+module Jogo.Jogo (iniciarJogo) where
     
 import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabuleiro4x4, inicializarTabuleiro, movimentoValido, verificarJogadorTabuleiro, verificarVitoria, posicaoOcupada, selecionarTabuleiro)
 import Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu, jogadorNoFoco)
@@ -10,7 +10,7 @@ import System.IO (hFlush, stdout)
 import Utils.Bot (escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot)
 import Control.Concurrent (threadDelay)
 import Utils.Ranking (atualizarRanking, mostrarRanking)
-import Data.Char (toLower)  -- Importa a função toLower para converter caracteres para minúscula
+import Data.Char (toLower)
 import System.Exit (exitSuccess)
 
 iniciarJogo :: IO ()

@@ -1,4 +1,4 @@
-module Utils.Ranking where
+module Utils.Ranking (atualizarRanking, mostrarRanking) where
 
 import System.IO
 import System.Directory (doesFileExist, renameFile, removeFile)
