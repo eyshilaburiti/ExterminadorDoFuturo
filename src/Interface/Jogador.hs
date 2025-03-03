@@ -34,7 +34,7 @@ obterJogadaOrigem mensagem jogador tabuleiro= do
     if jogadorNaPosicao tabuleiro linha coluna jogador then  
         return (linha, coluna)
     else do
-        putStrLn "Não existe nenhuma peça sua nessa posição do tabuleiro, escolha uma posição que já tenha uma peça sua"
+        putStrLn "\x274C Não existe nenhuma peça sua nessa posição do tabuleiro, escolha uma posição que já tenha uma peça sua"
         obterJogadaOrigem mensagem jogador tabuleiro
 
 obterJogadaDestino :: String -> Int -> Int -> String -> IO (Int, Int)
@@ -46,26 +46,26 @@ obterJogadaDestino caminhoArquivo linha coluna jogador = do
     let movMinuscula = map toLower movimento  -- Converte a entrada para minúscula
     if movMinuscula == "w" then
         if linha == 0 then do
-            putStrLn "Movimento inválido"
+            putStrLn "\x274C Movimento inválido"
             obterJogadaDestino caminhoArquivo linha coluna jogador
         else return (linha - 1, coluna)
     else if movMinuscula == "s" then
         if linha == 3 then do
-            putStrLn "Movimento inválido"
+            putStrLn "\x274C Movimento inválido"
             obterJogadaDestino caminhoArquivo linha coluna jogador
         else return (linha + 1, coluna)
     else if movMinuscula == "a" then
         if coluna == 0 then do
-            putStrLn "Movimento inválido"
+            putStrLn "\x274C Movimento inválido"
             obterJogadaDestino caminhoArquivo linha coluna jogador
         else return (linha, coluna - 1)
     else if movMinuscula == "d" then
         if coluna == 3 then do
-            putStrLn "Movimento inválido"
+            putStrLn "\x274C Movimento inválido"
             obterJogadaDestino caminhoArquivo linha coluna jogador
         else return (linha, coluna + 1)
     else do
-        putStrLn "Comando inválido"
+        putStrLn "\x274C Comando inválido"
         obterJogadaDestino caminhoArquivo linha coluna jogador
 
 -- Função para obter um número válido dentro de um intervalo específico
@@ -79,10 +79,10 @@ obterPosicao mensagem = do
             if n > 0 && n <= 4
                 then return (n - 1)
             else do
-                putStrLn "Posição inválida! Tente novamente."
+                putStrLn "\x274C Posição inválida! Tente novamente."
                 obterPosicao mensagem
         Nothing -> do
-            putStrLn "Entrada inválida!"
+            putStrLn "\x274C Entrada inválida!"
             obterPosicao mensagem
 
 -- Função para plantar semente
@@ -162,7 +162,7 @@ definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jo
                     definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
 
         _ -> do
-            putStrLn "Opção Inválida"
+            putStrLn "\x274C Opção Inválida"
             definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
 
 
@@ -179,7 +179,7 @@ escolherOpcaoMenu = do
     else if escolhaMinuscula == "j" then do
         return escolhaMinuscula
     else do 
-        putStrLn "Entrada inválida!"
+        putStrLn "\x274C Entrada inválida!"
         escolherOpcaoMenu
 
 exibirOpcaoMenu :: String -> IO ()

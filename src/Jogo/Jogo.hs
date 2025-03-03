@@ -151,11 +151,11 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
         then if ehBot jogadorAtual bot
             then do
                 focoBot <- escolherFocoBot tPassado tPresente tFuturo jogadorAtual foco
-                putStrLn $ "O jogador não foi encontrado no tabuleiro, o bot escolheu o novo foco: " ++ focoBot ++ "\n"
+                putStrLn $ "\x2757 O jogador não foi encontrado no tabuleiro, o bot escolheu o novo foco: " ++ focoBot ++ "\n"
                 return (focoBot, selecionarTabuleiro focoBot tPassado tPresente tFuturo)
 
             else do
-                putStrLn "O jogador não foi encontrado no tabuleiro, escolha o foco novamente:"
+                putStrLn "\x2757 O jogador não foi encontrado no tabuleiro, escolha o foco novamente:"
                 focoJogador <- definirFoco "src/Interface/foco.txt" tPassado tPresente tFuturo jogadorAtual foco
                 return (focoJogador, selecionarTabuleiro focoJogador tPassado tPresente tFuturo)
         else return (foco, tabuleiroSelecionado)
@@ -233,12 +233,12 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
                                 movimentarPeca novoTabuleiroSelecionado tPassado tPresente tFuturo jogadorAtual novoFoco linhaOrigem colunaOrigem linhaDestino colunaDestino
                             if jogadorMorreu
                                 then do
-                                    putStrLn "Jogador morreu ao entrar na planta!"
+                                    putStrLn "Jogador morreu ao entrar na planta! \x1F480"
                                     return (novoTPassado, novoTPresente, novoTFuturo, jogadorAtual, clones)
                                 else
                                     return (novoTPassado, novoTPresente, novoTFuturo, novoFoco, clones)
                         else do
-                            putStrLn "Movimento inválido! Você só pode se mover uma casa na horizontal ou vertical."
+                            putStrLn "\x274C Movimento inválido! Você só pode se mover uma casa na horizontal ou vertical."
                             jogar tPassado tPresente tFuturo jogadorAtual nomeAtual novoFoco clones bot
 
                 "p" -> do
@@ -256,7 +256,7 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
                                 plantarSemente novoTabuleiroSelecionado tPassado tPresente tFuturo novoFoco linhaDestino colunaDestino
                             return (novoTPassado, novoTPresente, novoTFuturo, novoFoco, clones)
                         else do
-                            putStrLn "Local inválido! local já está ocupado"
+                            putStrLn "\x274C Local inválido! local já está ocupado"
                             jogar tPassado tPresente tFuturo jogadorAtual nomeAtual novoFoco clones bot
 
                 _ -> do
@@ -264,8 +264,9 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
                     jogar tPassado tPresente tFuturo jogadorAtual nomeAtual novoFoco clones bot
 
         else do
-            putStrLn "Erro: Jogador não encontrado!"
+            putStrLn "\x2757 Erro: Jogador não encontrado!"
             jogar tPassado tPresente tFuturo jogadorAtual nomeAtual novoFoco clones bot
+
 escolheModoDeJogo :: IO Bool
 escolheModoDeJogo = do
     imprimirTxt  "src/Interface/escolherModoDeJogo.txt"
@@ -296,7 +297,7 @@ visualizarRegras mensagem = do
 finalizarJogo :: String -> String -> String -> IO ()
 finalizarJogo jogadorVencedor nomeVencedor nomePerdedor = do
     imprimirTxt "src/Interface/fimDeJogo.txt"
-    putStrLn $ "O jogador " ++ nomeVencedor ++ " (" ++ jogadorVencedor ++ ") venceu a rodada!"
+    putStrLn $ "O jogador " ++ nomeVencedor ++ " (" ++ jogadorVencedor ++ ") venceu a rodada! \x1F3C6"
     --let jogadorPerdedor = if jogadorVencedor == jogador1 then jogador2 else jogador1    
     atualizarRanking nomeVencedor nomePerdedor -- Atualiza pontos corretamente
     mostrarRanking
