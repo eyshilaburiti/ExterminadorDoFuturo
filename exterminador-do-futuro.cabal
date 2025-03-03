@@ -27,10 +27,9 @@ library
   exposed-modules:
       Interface.Jogador
       Jogo.Bot
+      Jogo.ControladorPlantas
       Jogo.Jogo
       Jogo.MovimentarPeca
-      Jogo.PlantarSemente
-      Jogo.RemoveSemente
       Jogo.Tabuleiro
       Jogo.ViagemTempo
       Utils.ImprimirTxt

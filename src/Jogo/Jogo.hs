@@ -4,8 +4,7 @@ import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabule
 import Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu, jogadorNoFoco)
 import Jogo.MovimentarPeca (movimentarPeca)
 import Jogo.ViagemTempo(defineViagem, posicaoLivre, viagem)
-import Jogo.PlantarSemente (plantarSemente)
-import Jogo.RemoveSemente (removeSemente)
+import Jogo.ControladorPlantas (plantarSemente)
 import Utils.ImprimirTxt (imprimirTxt)
 import System.IO (hFlush, stdout)
 import Jogo.Bot(escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot)
@@ -62,10 +61,6 @@ iniciarTabuleiro = do
 
     opcaoMenu <- escolherOpcaoMenu
     exibirOpcaoMenu opcaoMenu
-    -- regras <- visualizarRegras ()
-    -- if regras == True then imprimirTxt "src/Interface/regras.txt"
-    -- else putStr ""
-    
     bot <- escolheModoDeJogo
 
     if not bot then do
@@ -181,6 +176,7 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
                     putStrLn $ "A jogada escolhida pelo bot foi: " ++ jogadaBot ++ "\n"
                     return jogadaBot
                 else escolherJogada
+
 
 
             -- Se a jogada for "v" (viagem no tempo), definir o destino da viagem

@@ -61,7 +61,6 @@ atualizarTabuleiroViagem tabuleiroDestino tabuleiroOrigem linha coluna jogador =
         tabuleiroDestinoAtualizado = modificarTabuleiro tabuleiroDestino linha coluna jogador -- Chama modificarTabuleiro para colocar o jogador na mesma posição (linha, coluna), mas agora no tabuleiro de destino.Isso representa o jogador "chegando" ao novo tempo.
     in (tabuleiroDestinoAtualizado, tabuleiroOrigemAtualizado) --Retorna os dois tabuleiros atualizados como uma tupla (tabuleiroDestinoAtualizado, tabuleiroOrigemAtualizado), refletindo a viagem no tempo.
 
-
 -- Atualiza o tabuleiro com as jogadas
 modificarTabuleiro :: Tabuleiro -> Int -> Int -> String -> Tabuleiro
 modificarTabuleiro tabuleiro linha coluna jogador = 
@@ -71,9 +70,6 @@ modificarTabuleiro tabuleiro linha coluna jogador =
 inicializarTabuleiro :: Tabuleiro -> Int -> Int -> String -> Tabuleiro
 inicializarTabuleiro tabuleiro linha coluna jogador = 
     take linha tabuleiro ++ [take coluna (tabuleiro !! linha) ++ [jogador] ++ drop (coluna +  1) (tabuleiro !! linha)] ++ drop (linha + 1) tabuleiro
-    
--- Colocar função de foco aqui )para a representação gráfica no jogo)
-
 
 movimentoValido :: Tabuleiro -> (Int, Int) -> (Int, Int) -> Bool
 movimentoValido tabuleiro (linhaAntiga, colunaAntiga) (linhaNova, colunaNova) =
@@ -106,9 +102,6 @@ temPlanta :: Tabuleiro -> Int -> Int -> Bool
 temPlanta tabuleiro linha coluna = 
     let valor = (tabuleiro !! linha) !! coluna
     in valor `elem` [semente, arbusto, arvore]
-
-
-
 
 
 contarPecas :: String -> Tabuleiro -> Int
