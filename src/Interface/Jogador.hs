@@ -21,7 +21,7 @@ escolherJogada = do
     else if escolhaMinuscula == "r" then do
         return escolhaMinuscula
     else do 
-        putStrLn "Entrada inválida!"
+        putStrLn "\x274C Entrada inválida!"
         escolherJogada  
 
 -- Solicitar jogada do jogador
