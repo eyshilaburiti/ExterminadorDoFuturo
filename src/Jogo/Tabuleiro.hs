@@ -11,10 +11,10 @@ espacoVazio :: String
 espacoVazio = "\x1F533"
 
 jogador1 :: String
-jogador1 = "\x1F98A"  
+jogador1 = "\x26AA"   
 
 jogador2 :: String
-jogador2 = "\x1F407"
+jogador2 = "\x26AB"
 
 semente :: String 
 semente = "\x1F330"
