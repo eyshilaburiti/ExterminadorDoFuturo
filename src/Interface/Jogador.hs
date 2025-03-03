@@ -3,6 +3,7 @@ module Interface.Jogador(jogadorNoFoco, obterJogadaOrigem, obterJogadaDestino, d
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
 import Utils.ImprimirTxt (imprimirTxt)
+import Utils.Ranking (mostrarRanking)
 import Jogo.Tabuleiro(jogadorNaPosicao, existeJogador, Tabuleiro)
 import Data.Char (toLower)  -- Importa a função toLower para converter caracteres para minúscula
 
@@ -178,6 +179,10 @@ escolherOpcaoMenu = do
         return escolhaMinuscula
     else if escolhaMinuscula == "j" then do
         return escolhaMinuscula
+    else if escolhaMinuscula == "r" then do
+        return escolhaMinuscula
+    else if escolhaMinuscula == "s" then do
+        return escolhaMinuscula
     else do 
         putStrLn "\x274C Entrada inválida!"
         escolherOpcaoMenu
@@ -186,6 +191,7 @@ exibirOpcaoMenu :: String -> IO ()
 exibirOpcaoMenu opcao
     | opcao == "d" = imprimirTxt "src/Interface/detalhamentoJogo.txt"
     | opcao == "m" = imprimirTxt "src/Interface/detalhamentoJogo.txt"
+    | opcao == "r" = mostrarRanking
     | opcao == "j" = putStr ""
     | otherwise = putStr ""
 

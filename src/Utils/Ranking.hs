@@ -66,5 +66,8 @@ mostrarRanking :: IO ()
 mostrarRanking = do
     ranking <- lerRanking
     let rankingOrdenado = sortOn (Down . snd) ranking
+    let maxPontos = if null rankingOrdenado then 0 else snd (head rankingOrdenado)
     putStrLn "\nRanking de Jogadores:"
-    mapM_ (\(nome, pontos) -> putStrLn $ nome ++ ": " ++ show pontos) rankingOrdenado
+    mapM_ (\(nome, pontos) -> do
+        let trofeu = if pontos == maxPontos then "🏆 " else ""
+        putStrLn $ trofeu ++ nome ++ ": " ++ show pontos) rankingOrdenado

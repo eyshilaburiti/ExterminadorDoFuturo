@@ -61,18 +61,22 @@ iniciarTabuleiro = do
 
     opcaoMenu <- escolherOpcaoMenu
     exibirOpcaoMenu opcaoMenu
-    bot <- escolheModoDeJogo
 
-    if not bot then do
-        ((nome1, jog1), (nome2, jog2)) <- registrarJogadores
-        --let (tabuleiroPassado, tabuleiroPresente, tabuleiroFuturo) = inicioTab jog1 jog2
-        rodadaJogador tabuleiroPassado tabuleiroPresente tabuleiroFuturo jog1 nome1 nome1 jog1 nome2 jog2 "passado" "futuro" 0 0 bot
-    else do
-        (nome1, jog1) <- registrarJogadorUnico
-        let nome2 = "bot"
-        let jog2 = jogador2 
-        --let (tabuleiroPassado, tabuleiroPresente, tabuleiroFuturo) = inicioTab jog1 jog2
-        rodadaJogador tabuleiroPassado tabuleiroPresente tabuleiroFuturo jog1 nome1 nome1 jog1 nome2 jog2 "passado" "futuro" 0 0 bot
+    if opcaoMenu == "j" then do
+        bot <- escolheModoDeJogo
+        if not bot then do
+            ((nome1, jog1), (nome2, jog2)) <- registrarJogadores
+            --let (tabuleiroPassado, tabuleiroPresente, tabuleiroFuturo) = inicioTab jog1 jog2
+            rodadaJogador tabuleiroPassado tabuleiroPresente tabuleiroFuturo jog1 nome1 nome1 jog1 nome2 jog2 "passado" "futuro" 0 0 bot
+        else do
+            (nome1, jog1) <- registrarJogadorUnico
+            let nome2 = "bot"
+            let jog2 = jogador2 
+            --let (tabuleiroPassado, tabuleiroPresente, tabuleiroFuturo) = inicioTab jog1 jog2
+            rodadaJogador tabuleiroPassado tabuleiroPresente tabuleiroFuturo jog1 nome1 nome1 jog1 nome2 jog2 "passado" "futuro" 0 0 bot
+    else do 
+        iniciarTabuleiro
+
 
 rodadaJogador :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String-> String -> String -> String -> String -> String -> String -> Int -> Int -> Bool -> IO()
 rodadaJogador tPassado tPresente tFuturo jogadorAtual nomeAtual nome1 jog1 nome2 jog2 focoJogador1 focoJogador2 clonesJogador1 clonesJogador2 bot = do
