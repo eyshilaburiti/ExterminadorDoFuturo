@@ -1,4 +1,9 @@
-module Jogo.Tabuleiro where
+module Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabuleiro4x4, 
+inicializarTabuleiro, movimentoValido, verificarJogadorTabuleiro, verificarVitoria, posicaoOcupada,
+selecionarTabuleiro, jogadorNaPosicao, existeJogador, obtemCelula, arbusto, arvore, espacoVazio, 
+novaPosicaoEmpurrado, atualizarTabuleiroViagem, atualizarTabuleiro, empurrarJogador, modificarTabuleiro, 
+semente, removerSementeNoTabuleiro, plantarSementeNoTabuleiro, temPlanta)
+where
 
 -- Criando o tabuleiro 
 type Tabuleiro = [[String]]
@@ -103,13 +108,6 @@ temPlanta tabuleiro linha coluna =
     let valor = (tabuleiro !! linha) !! coluna
     in valor `elem` [semente, arbusto, arvore]
 
-
-contarPecas :: String -> Tabuleiro -> Int
-contarPecas jogador tabuleiro = 
-    length [(linha, coluna) | (linha, linhaVals) <- zip [0..] tabuleiro,
-                              (coluna, valor) <- zip [0..] linhaVals,
-                              valor == jogador]
-
 verificarJogadorTabuleiro :: String -> Tabuleiro -> Bool
 verificarJogadorTabuleiro jogador tabuleiro =
     any (any (== jogador)) tabuleiro
@@ -207,12 +205,12 @@ jogadorNaPosicao tabuleiro linha coluna jogador =
 
 -- Verifica vitória
 verificarVitoria :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> String -> String -> (Bool, String, String)
-verificarVitoria tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador1 nome1 jogador2 nome2 
-    | ((existeJogador tabuleiroPassado jogador1) + (existeJogador tabuleiroPresente jogador1) + (existeJogador tabuleiroFuturo jogador1)) == 1 
-        = (True, jogador2, nome2)  -- Retorna o emoji e nome do vencedor
-    | ((existeJogador tabuleiroPassado jogador2) + (existeJogador tabuleiroPresente jogador2) + (existeJogador tabuleiroFuturo jogador2)) == 1 
-        = (True, jogador1, nome1)  -- Retorna o emoji e nome do vencedor
-    | otherwise = (False, jogador1, nome1) 
+verificarVitoria tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador1' nome1 jogador2' nome2 
+    | ((existeJogador tabuleiroPassado jogador1') + (existeJogador tabuleiroPresente jogador1') + (existeJogador tabuleiroFuturo jogador1')) == 1 
+        = (True, jogador2', nome2)  -- Retorna o emoji e nome do vencedor
+    | ((existeJogador tabuleiroPassado jogador2') + (existeJogador tabuleiroPresente jogador2') + (existeJogador tabuleiroFuturo jogador2')) == 1 
+        = (True, jogador1', nome1)  -- Retorna o emoji e nome do vencedor
+    | otherwise = (False, jogador1', nome1) 
 
 -- Verifica se existe peça de jogador em um tabuleiro específico, retorna 1 se existe, caso contrário retorna 0
 existeJogador :: Tabuleiro -> String -> Int
@@ -224,4 +222,6 @@ selecionarTabuleiro :: String -> Tabuleiro -> Tabuleiro -> Tabuleiro -> Tabuleir
 selecionarTabuleiro "passado" tPassado _ _ = tPassado
 selecionarTabuleiro "presente" _ tPresente _ = tPresente
 selecionarTabuleiro "futuro" _ _ tFuturo = tFuturo
+selecionarTabuleiro _ _ _ _ = error "Tempo inválido: escolha entre 'passado', 'presente' ou 'futuro'."
+
 

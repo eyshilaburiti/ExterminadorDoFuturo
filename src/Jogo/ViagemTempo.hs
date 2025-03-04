@@ -12,6 +12,7 @@ viagem tPassado tPresente tFuturo novoTempo tempoAtual linha coluna clones jogad
                 "passado"  -> atualizarTabuleiroViagem tPassado tPresente linha coluna jogadorAtual
                 "presente" -> atualizarTabuleiroViagem tPresente tPassado linha coluna jogadorAtual
                 "futuro"   -> atualizarTabuleiroViagem tFuturo tPresente linha coluna jogadorAtual
+                _          -> (tPassado, tPresente)
     in
         if novoTempo == "passado" && tempoAtual == "presente"
             then (novoTabuleiro, tPresente, tFuturo, (clones + 1))
@@ -19,8 +20,10 @@ viagem tPassado tPresente tFuturo novoTempo tempoAtual linha coluna clones jogad
             then (tPassado, tabuleiroOrigemAtualizado, novoTabuleiro, clones)
         else if novoTempo == "presente" && tempoAtual == "passado"
             then (tabuleiroOrigemAtualizado, novoTabuleiro, tFuturo, clones)
+        else if novoTempo == "presente" && tempoAtual == "futuro"
+            then (tPassado, novoTabuleiro, tFuturo, (clones + 1))
         else
-            (tPassado, novoTabuleiro, tFuturo, (clones + 1))
+            (tPassado, tPresente, tFuturo, clones)
 
 
 -- Função usada para que o jogador escolha o tempo para o qual deseja viajar 
