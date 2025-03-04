@@ -1,7 +1,7 @@
 module Utils.Bot (escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot) where
 
 import System.Random (randomRIO)
-import Jogo.Tabuleiro (Tabuleiro, verificarJogadorTabuleiro, jogadorNaPosicao, existeJogador, obtemCelula, posicaoOcupada, arbusto, arvore, espacoVazio, jogador1, jogador2, novaPosicaoEmpurrado)
+import Jogo.Tabuleiro (Tabuleiro, verificarJogadorTabuleiro, jogadorNaPosicao, existeJogador, obtemCelula, arbusto, arvore, espacoVazio, novaPosicaoEmpurrado)
 
 -- | O bot escolhe uma jogada: "m" para mover, "p" para plantar, "v" para viajar
 escolherJogadaBot :: Tabuleiro -> (Int, Int) -> String -> IO String
@@ -33,7 +33,8 @@ escolherTempoBot focoAtual = do
     let tempos = case focoAtual of
                     "passado" -> ["presente"]
                     "presente" -> ["passado", "futuro"]
-                    "futuro" -> ["presente"] -- mostra as opções de viagem possível
+                    "futuro" -> ["presente"] 
+                    _        -> []
     indice <- randomRIO (0, length tempos - 1)
     return (tempos !! indice)
 
@@ -44,8 +45,11 @@ escolherOrigemBot tabuleiro jogador = do
                     linha <- [0..3], coluna <- [0..3],
                     verificarJogadorTabuleiro jogador tabuleiro,
                     jogadorNaPosicao tabuleiro linha coluna jogador] -- lista todas as pecas no tabuleiro
-    
-    return (head pecas) -- retorna a coordenada da peça escolhida de origem
+    case pecas of 
+        (x:_) -> return x 
+        [] -> do 
+            putStr "Nenhuma peça encontrada"
+            return (-1, -1) -- retorna a coordenada da peça escolhida de origem
 
 -- Atualiza a lógica do bot para priorizar matar oponente
 escolherDestinoBot :: Tabuleiro -> (Int, Int) -> String -> IO (Int, Int)
@@ -120,8 +124,8 @@ movimentoLevaMorte tabuleiro (linhaOrigem, colunaOrigem) (linhaDestino, colunaDe
 
 -- Seleciona destinos letais para o bot
 destinosMortais :: Tabuleiro -> (Int, Int) -> String -> [(Int, Int)] -> [(Int, Int)]
-destinosMortais tabuleiro (linha, coluna) jogador  destinosValidos=
-    filter (\destino -> movimentoLevaMorte tabuleiro (linha, coluna) destino jogador) destinosValidos
+destinosMortais tabuleiro (linha, coluna) jogador  destinosValidosLista=
+    filter (\destino -> movimentoLevaMorte tabuleiro (linha, coluna) destino jogador) destinosValidosLista
 
 
 
