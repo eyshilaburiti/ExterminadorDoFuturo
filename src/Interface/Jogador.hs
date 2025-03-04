@@ -86,13 +86,6 @@ obterPosicao mensagem = do
             putStrLn "\x274C Entrada inválida!"
             obterPosicao mensagem
 
--- Função para plantar semente
-obterLocalSemente :: IO (Int, Int)
-obterLocalSemente = do
-    linha <- obterPosicao "Digite a linha onde deseja plantar a semente: (1 a 4)"
-    coluna <- obterPosicao "Digite a coluna onde deseja plantar a semente: (1 a 4)"
-    return (linha, coluna)
-
 -- Função que define o foco do jogador
 definirFoco :: String -> Tabuleiro -> Tabuleiro -> Tabuleiro-> String -> String -> IO String 
 definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior = do

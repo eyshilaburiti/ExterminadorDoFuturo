@@ -1,6 +1,6 @@
 module Jogo.MovimentarPeca (movimentarPeca) where
 
-import Jogo.Tabuleiro (Tabuleiro, movimentoValido, empurrarJogador, modificarTabuleiro, semente, arvore, obtemCelula, arbusto, espacoVazio)
+import Jogo.Tabuleiro (Tabuleiro, movimentoValido, empurrarJogador, modificarTabuleiro, semente, obtemCelula, arbusto, espacoVazio)
 import Jogo.ControladorPlantas (removerSemente)
 
 movimentarPeca :: Tabuleiro -> Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> Int -> Int -> Int -> Int -> IO (Tabuleiro, Tabuleiro, Tabuleiro, Bool)
