@@ -3,19 +3,19 @@ module Utils.Bot (escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolh
 import System.Random (randomRIO)
 import Jogo.Tabuleiro (Tabuleiro, verificarJogadorTabuleiro, jogadorNaPosicao, existeJogador, obtemCelula, arbusto, arvore, espacoVazio, novaPosicaoEmpurrado)
 
--- | O bot escolhe uma jogada: "m" para mover, "p" para plantar, "v" para viajar
+-- Função para que o bot escolha uma jogada
 escolherJogadaBot :: Tabuleiro -> (Int, Int) -> String -> IO String
 escolherJogadaBot tabuleiro (linha, coluna) jogador = do
     if jogadaPrioritariaBot tabuleiro (linha, coluna) jogador
         then do
             return "m"
         else do
-            let jogadas = ["m", "p", "v"] -- Escolha aleatória caso não haja jogada prioritária
+            -- escolhe aleatoriamente 
+            let jogadas = ["m", "p", "v"] 
             indice <- randomRIO (0, length jogadas - 1)
             return (jogadas !! indice)
 
--- Melhorar a lógica disso aqui e retirar caso eu não use 
--- | Verifica se há uma árvore ou um oponente adjacente ao bot
+-- Caso exista uma árvore ou um jogador perto do bot então será classificada como jogada prioriátia 
 jogadaPrioritariaBot :: Tabuleiro -> (Int, Int) -> String -> Bool
 jogadaPrioritariaBot tabuleiro (linha, coluna) jogador =
     let destinos = destinosValidos (linha, coluna)
@@ -27,9 +27,10 @@ jogadaPrioritariaBot tabuleiro (linha, coluna) jogador =
 
 
 
--- | O bot escolhe um tempo válido para viajar (passado, presente ou futuro)
+-- Escolhe o tempo par o bot viajar 
 escolherTempoBot :: String -> IO String
 escolherTempoBot focoAtual = do
+    -- lista as opções de mudança de tempo
     let tempos = case focoAtual of
                     "passado" -> ["presente"]
                     "presente" -> ["passado", "futuro"]
@@ -38,20 +39,20 @@ escolherTempoBot focoAtual = do
     indice <- randomRIO (0, length tempos - 1)
     return (tempos !! indice)
 
--- | O bot escolhe a primeira peça válida no tabuleiro
+-- O bot seleciona a origem escolhendo a primeira peça válida no tabuleiro
 escolherOrigemBot :: Tabuleiro -> String -> IO (Int, Int)
 escolherOrigemBot tabuleiro jogador = do
     let pecas = [(linha, coluna) |
                     linha <- [0..3], coluna <- [0..3],
                     verificarJogadorTabuleiro jogador tabuleiro,
-                    jogadorNaPosicao tabuleiro linha coluna jogador] -- lista todas as pecas no tabuleiro
+                    jogadorNaPosicao tabuleiro linha coluna jogador] 
     case pecas of 
         (x:_) -> return x 
         [] -> do 
             putStr "Nenhuma peça encontrada"
-            return (-1, -1) -- retorna a coordenada da peça escolhida de origem
+            return (-1, -1) 
 
--- Atualiza a lógica do bot para priorizar matar oponente
+-- Escolhe o destino do bot
 escolherDestinoBot :: Tabuleiro -> (Int, Int) -> String -> IO (Int, Int)
 escolherDestinoBot tabuleiro (linhaOrigem, colunaOrigem) jogador = do
     let destinos = destinosValidos (linhaOrigem, colunaOrigem)

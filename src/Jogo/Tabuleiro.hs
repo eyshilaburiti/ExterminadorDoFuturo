@@ -62,9 +62,12 @@ atualizarTabuleiro tabuleiro linhaAntiga colunaAntiga linhaNova colunaNova jogad
 -- Atualiza o tabuleiro para viagens no tempo
 atualizarTabuleiroViagem :: Tabuleiro -> Tabuleiro -> Int -> Int -> String -> (Tabuleiro, Tabuleiro)
 atualizarTabuleiroViagem tabuleiroDestino tabuleiroOrigem linha coluna jogador =
-    let tabuleiroOrigemAtualizado = modificarTabuleiro tabuleiroOrigem linha coluna espacoVazio -- Chama modificarTabuleiro para substituir a posição (linha, coluna) no tabuleiro de origem por "☐" (representação de um espaço vazio). Isso simula o jogador "saindo" desse tabuleiro.
-        tabuleiroDestinoAtualizado = modificarTabuleiro tabuleiroDestino linha coluna jogador -- Chama modificarTabuleiro para colocar o jogador na mesma posição (linha, coluna), mas agora no tabuleiro de destino.Isso representa o jogador "chegando" ao novo tempo.
-    in (tabuleiroDestinoAtualizado, tabuleiroOrigemAtualizado) --Retorna os dois tabuleiros atualizados como uma tupla (tabuleiroDestinoAtualizado, tabuleiroOrigemAtualizado), refletindo a viagem no tempo.
+    -- modifica o tabuleiro para que o personagem seja removido dele 
+    let tabuleiroOrigemAtualizado = modificarTabuleiro tabuleiroOrigem linha coluna espacoVazio 
+        -- Coloca o jogador na mesma linha e coluna em que estava no tabuleiro anterior
+        tabuleiroDestinoAtualizado = modificarTabuleiro tabuleiroDestino linha coluna jogador 
+    -- retorna os dois tabuleiros agora atualizados
+    in (tabuleiroDestinoAtualizado, tabuleiroOrigemAtualizado) 
 
 -- Atualiza o tabuleiro com as jogadas
 modificarTabuleiro :: Tabuleiro -> Int -> Int -> String -> Tabuleiro

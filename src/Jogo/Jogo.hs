@@ -85,9 +85,11 @@ iniciarTabuleiro = do
 rodadaJogador :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String-> String -> String -> String -> String -> String -> String -> Int -> Int -> Bool -> IO()
 rodadaJogador tPassado tPresente tFuturo jogadorAtual nomeAtual nome1 jog1 nome2 jog2 focoJogador1 focoJogador2 clonesJogador1 clonesJogador2 bot = do
 
+    -- Guarda tanto o foco quanto a quantidade de clones do jogador atual
     let foco = if jogadorAtual == jog1 then focoJogador1 else focoJogador2
     let clones = if jogadorAtual == jog1 then clonesJogador1 else clonesJogador2
     
+    -- Executa a função responsável pela primeira jogada e guarda o resultado numa tupla com os tabuleiros, o novo foco e a quantidade de clones atual
     (novoTPassado1, novoTPresente1, novoTFuturo1, novoFoco1, novoClone1) <- jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot
 
     -- Verifica vitória após a primeira jogada
@@ -97,6 +99,7 @@ rodadaJogador tPassado tPresente tFuturo jogadorAtual nomeAtual nome1 jog1 nome2
         finalizarJogo emojiVencedor1 nomeVencedor1 nomePerdedor
         return ()  
     else do
+        -- Chama a função para a segunda jogada e guarda o resultado numa tupla com os novos valores
         (novoTPassado2, novoTPresente2, novoTFuturo2, novoFoco2, novoClone2) <- jogar novoTPassado1 novoTPresente1 novoTFuturo1 jogadorAtual nomeAtual novoFoco1 novoClone1 bot
 
         -- Verifica vitória após a segunda jogada
@@ -111,6 +114,7 @@ rodadaJogador tPassado tPresente tFuturo jogadorAtual nomeAtual nome1 jog1 nome2
             exibeFoco novoFoco2
             imprimirTxt "src/Interface/delimitadorFinal.txt"
 
+            -- Verifica o foco para a próxima rodada
             novoFoco <- if ehBot jogadorAtual bot
                 then do
                     focoBot <- escolherFocoBot novoTPassado2 novoTPresente2 novoTFuturo2 jogadorAtual foco
@@ -118,19 +122,23 @@ rodadaJogador tPassado tPresente tFuturo jogadorAtual nomeAtual nome1 jog1 nome2
                     return focoBot
                 else definirFoco "src/Interface/foco.txt" novoTPassado2 novoTPresente2 novoTFuturo2 jogadorAtual foco
 
+
+            -- redefine os valores dos focos e em seguida dos clones para ambos os jogadores e armazena os resultados em tuplas
             let (novoFocoJogador1, novoFocoJogador2) =
                     if jogadorAtual == jog1
                         then (novoFoco, focoJogador2)
                         else (focoJogador1, novoFoco)
-                
+
             let (clonesAtualizadosJogador1, clonesAtualizadosJogador2) =
                     if jogadorAtual == jog1
                         then (novoClone2, clonesJogador2)
                         else (clonesJogador1, novoClone2)
             
+            -- Define o proximoJogador e o nome dele
             let proximoJogador = if jogadorAtual == jog1 then jog2 else jog1
             let proxNome = if proximoJogador == jog1 then nome1 else nome2
 
+            -- Chama recursivamente para uma próxima rodada
             rodadaJogador novoTPassado2 novoTPresente2 novoTFuturo2 proximoJogador proxNome nome1 jog1 nome2 jog2 novoFocoJogador1 novoFocoJogador2 clonesAtualizadosJogador1 clonesAtualizadosJogador2 bot
 
 
@@ -144,12 +152,13 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
     exibeFoco foco
     imprimirTxt "src/Interface/delimitadorFinal.txt"
 
+    -- Seleciona o tabuleiro correspondente ao foco atual
     let tabuleiroSelecionado
           | foco == "passado"  = tPassado
           | foco == "presente" = tPresente
           | otherwise  = tFuturo
 
-    -- Verifica se o jogador está no foco atual, ajusta o foco e o tabuleiro se necessário
+    -- Verifica se o jogador está no foco atual, se não estiver ajusta o foco e o tabuleiro
     (novoFoco, novoTabuleiroSelecionado) <- if not (jogadorNoFoco tabuleiroSelecionado foco jogadorAtual)
         then if ehBot jogadorAtual bot
             then do
@@ -167,20 +176,21 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
 
     if verificarJogadorTabuleiro jogadorAtual novoTabuleiroSelecionado
         then do
+            -- Captura a linha e coluna de origem
             (linhaOrigem, colunaOrigem) <- if ehBot jogadorAtual bot
                 then do
-                    threadDelay (2 * 1000000)  -- 2 segundos
+                    threadDelay (2 * 1000000)  -- delay de 2 segundos para o bot
                     (linhaOrigemBot, colunaOrigemBot) <- escolherOrigemBot novoTabuleiroSelecionado jogadorAtual
                     putStrLn $ "Origem escolhida pelo bot: " ++ show (linhaOrigemBot + 1, colunaOrigemBot + 1)
                     return (linhaOrigemBot, colunaOrigemBot)
                 else obterJogadaOrigem "Coordenadas de Origem: " jogadorAtual novoTabuleiroSelecionado
 
 
-            -- Se o jogador é um bot chama a função para ele escolher sua jogada
+            -- Jogador escolhe a jogada
             jogada <- if ehBot jogadorAtual bot
                 then do 
                     jogadaBot <- escolherJogadaBot novoTabuleiroSelecionado (linhaOrigem, colunaOrigem) jogadorAtual
-                    threadDelay (2 * 1000000)  -- 2 seconds
+                    threadDelay (2 * 1000000)  -- delay de 2 segundos
                     putStrLn $ "A jogada escolhida pelo bot foi: " ++ jogadaBot ++ "\n"
                     return jogadaBot
                 else escolherJogada
@@ -192,7 +202,7 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
                 then if ehBot jogadorAtual bot
                     then do
                         tempoBot <- escolherTempoBot novoFoco
-                        threadDelay (2 * 1000000)  -- 2 seconds
+                        threadDelay (2 * 1000000)  -- delay de 2 segundos
                         putStrLn $ "Tempo escolhido pelo bot: " ++ tempoBot
                         return tempoBot
                     else defineViagem "src/Interface/viagem.txt" novoFoco clones
