@@ -1,7 +1,7 @@
 module Jogo.Jogo (iniciarJogo) where
     
 import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabuleiro4x4, inicializarTabuleiro, movimentoValido, verificarJogadorTabuleiro, verificarVitoria, posicaoOcupada, selecionarTabuleiro)
-import Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu, jogadorNoFoco)
+import Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu, jogadorNoFoco, escolheModoDeJogo, exibeFoco)
 import Jogo.MovimentarPeca (movimentarPeca)
 import Jogo.ViagemTempo(defineViagem, posicaoLivre, viagem)
 import Jogo.ControladorPlantas (plantarSemente)
@@ -15,7 +15,7 @@ import System.Exit (exitSuccess)
 
 iniciarJogo :: IO ()
 iniciarJogo = do
-    imprimirTxt "src/Interface/exterminadorDoFuturo.txt"
+    imprimirTxt "src/Interface/textosDeExibicao/exterminadorDoFuturo.txt"
     iniciarTabuleiro
 
 registrarJogadores :: IO ((String, String), (String, String))
@@ -109,10 +109,10 @@ rodadaJogador tPassado tPresente tFuturo jogadorAtual nomeAtual nome1 jog1 nome2
             finalizarJogo emojiVencedor2 nomeVencedor2 nomePerdedor
             return ()
         else do
-            imprimirTxt "src/Interface/delimitadorInicial.txt"
+            imprimirTxt "src/Interface/textosDeExibicao/delimitadorInicial.txt"
             imprimirTabuleiros novoTPassado2 novoTPresente2 novoTFuturo2
             exibeFoco novoFoco2
-            imprimirTxt "src/Interface/delimitadorFinal.txt"
+            imprimirTxt "src/Interface/textosDeExibicao/delimitadorFinal.txt"
 
             -- Verifica o foco para a próxima rodada
             novoFoco <- if ehBot jogadorAtual bot
@@ -120,7 +120,7 @@ rodadaJogador tPassado tPresente tFuturo jogadorAtual nomeAtual nome1 jog1 nome2
                     focoBot <- escolherFocoBot novoTPassado2 novoTPresente2 novoTFuturo2 jogadorAtual foco
                     putStrLn $ "O foco do bot na próxima rodada será: " ++ focoBot ++ "\n" 
                     return focoBot
-                else definirFoco "src/Interface/foco.txt" novoTPassado2 novoTPresente2 novoTFuturo2 jogadorAtual foco
+                else definirFoco "src/Interface/menus/foco.txt" novoTPassado2 novoTPresente2 novoTFuturo2 jogadorAtual foco
 
 
             -- redefine os valores dos focos e em seguida dos clones para ambos os jogadores e armazena os resultados em tuplas
@@ -144,13 +144,13 @@ rodadaJogador tPassado tPresente tFuturo jogadorAtual nomeAtual nome1 jog1 nome2
 
 jogar :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> String -> Int -> Bool -> IO (Tabuleiro, Tabuleiro, Tabuleiro, String, Int)
 jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
-    imprimirTxt "src/Interface/delimitadorInicial.txt"
+    imprimirTxt "src/Interface/textosDeExibicao/delimitadorInicial.txt"
     putStr ("- Foco atual: " ++ foco)
     putStrLn $ "\nTurno do jogador: " ++ jogadorAtual ++ " " ++ "(" ++ nomeAtual ++ ")"-- mostra o emoji 
     putStrLn ""
     imprimirTabuleiros tPassado tPresente tFuturo
     exibeFoco foco
-    imprimirTxt "src/Interface/delimitadorFinal.txt"
+    imprimirTxt "src/Interface/textosDeExibicao/delimitadorFinal.txt"
 
     -- Seleciona o tabuleiro correspondente ao foco atual
     let tabuleiroSelecionado
@@ -168,7 +168,7 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
 
             else do
                 putStrLn "\x2757 O jogador não foi encontrado no tabuleiro, escolha o foco novamente:"
-                focoJogador <- definirFoco "src/Interface/foco.txt" tPassado tPresente tFuturo jogadorAtual foco
+                focoJogador <- definirFoco "src/Interface/menus/foco.txt" tPassado tPresente tFuturo jogadorAtual foco
                 return (focoJogador, selecionarTabuleiro focoJogador tPassado tPresente tFuturo)
         else return (foco, tabuleiroSelecionado)
 
@@ -205,7 +205,7 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
                         threadDelay (2 * 1000000)  -- delay de 2 segundos
                         putStrLn $ "Tempo escolhido pelo bot: " ++ tempoBot
                         return tempoBot
-                    else defineViagem "src/Interface/viagem.txt" novoFoco clones
+                    else defineViagem "src/Interface/menus/viagem.txt" novoFoco clones
                 else return ""  -- Retorna string vazia para outros casos
 
 
@@ -239,7 +239,7 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
                             threadDelay (2 * 1000000)
                             putStrLn $ "Destino escolhido pelo bot: " ++ show (linhaDestinoBot + 1, colunaDestinoBot + 1)
                             return (linhaDestinoBot, colunaDestinoBot)
-                        else obterJogadaDestino "src/Interface/movimento.txt" linhaOrigem colunaOrigem jogadorAtual
+                        else obterJogadaDestino "src/Interface/menus/movimento.txt" linhaOrigem colunaOrigem jogadorAtual
 
                     if movimentoValido novoTabuleiroSelecionado (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino)
                         then do
@@ -262,7 +262,7 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
                             threadDelay (2 * 1000000)
                             putStrLn $ "Destino escolhido pelo bot: " ++ show (linhaDestinoBot + 1, colunaDestinoBot + 1)
                             return (linhaDestinoBot, colunaDestinoBot)
-                        else obterJogadaDestino "src/Interface/plantar.txt" linhaOrigem colunaOrigem jogadorAtual
+                        else obterJogadaDestino "src/Interface/menus/plantar.txt" linhaOrigem colunaOrigem jogadorAtual
 
                     if not (posicaoOcupada novoTabuleiroSelecionado linhaDestino colunaDestino)
                         then do
@@ -281,24 +281,10 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
             putStrLn "\x2757 Erro: Jogador não encontrado!"
             jogar tPassado tPresente tFuturo jogadorAtual nomeAtual novoFoco clones bot
 
-escolheModoDeJogo :: IO Bool
-escolheModoDeJogo = do
-    imprimirTxt  "src/Interface/escolherModoDeJogo.txt"
-    hFlush stdout
-    modo <- getLine
-    let modoMinuscula = unwords . words $ map toLower modo
-
-    case modoMinuscula of
-        "s" -> return True
-        "d" -> return False
-        _   -> do
-            putStrLn "\x2757 Opção inválida. Tente novamente."
-            escolheModoDeJogo
-
 -- Exibe mensagem de fim de jogo
 finalizarJogo :: String -> String -> String -> IO ()
 finalizarJogo jogadorVencedor nomeVencedor nomePerdedor = do
-    imprimirTxt "src/Interface/fimDeJogo.txt"
+    imprimirTxt "src/Interface/textosDeExibicao/fimDeJogo.txt"
     putStrLn $ "O jogador " ++ nomeVencedor ++ " (" ++ jogadorVencedor ++ ") venceu a rodada! \x1F3C6"
     atualizarRanking nomeVencedor nomePerdedor 
     mostrarRanking
@@ -306,10 +292,3 @@ finalizarJogo jogadorVencedor nomeVencedor nomePerdedor = do
 
 ehBot :: String -> Bool -> Bool
 ehBot jogadorAtual bot = jogadorAtual == jogador2 && bot
-
-exibeFoco :: String -> IO ()
-exibeFoco foco
-    | foco == "passado" = imprimirTxt "src/Interface/passado.txt"
-    | foco == "presente" = imprimirTxt "src/Interface/presente.txt"
-    | foco == "futuro" = imprimirTxt "src/Interface/futuro.txt"
-    | otherwise = putStr ""

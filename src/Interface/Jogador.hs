@@ -1,4 +1,4 @@
-module Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu, jogadorNoFoco) where
+module Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu, jogadorNoFoco, escolheModoDeJogo, exibeFoco) where
 
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
@@ -9,7 +9,7 @@ import Data.Char (toLower)
 
 escolherJogada :: IO String
 escolherJogada = do 
-    imprimirTxt "src/Interface/jogadas.txt"
+    imprimirTxt "src/Interface/menus/jogadas.txt"
     hFlush stdout
     escolha <- getLine
     let escolhaMinuscula = unwords . words $ map toLower escolha 
@@ -125,10 +125,16 @@ definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jo
             putStrLn "\x274C Opção Inválida"
             definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
 
+exibeFoco :: String -> IO ()
+exibeFoco foco
+    | foco == "passado" = imprimirTxt "src/Interface/textosDeExibicao/passado.txt"
+    | foco == "presente" = imprimirTxt "src/Interface/textosDeExibicao/presente.txt"
+    | foco == "futuro" = imprimirTxt "src/Interface/textosDeExibicao/futuro.txt"
+    | otherwise = putStr ""
 
 escolherOpcaoMenu :: IO String
 escolherOpcaoMenu = do 
-    imprimirTxt "src/Interface/menu.txt"
+    imprimirTxt "src/Interface/menus/menu.txt"
     hFlush stdout
     escolha <- getLine
     let escolhaMinuscula = unwords . words $ map toLower escolha
@@ -148,11 +154,25 @@ escolherOpcaoMenu = do
 
 exibirOpcaoMenu :: String -> IO ()
 exibirOpcaoMenu opcao
-    | opcao == "d" = imprimirTxt "src/Interface/detalhamentoJogo.txt"
-    | opcao == "m" = imprimirTxt "src/Interface/modoDeJogo.txt"
+    | opcao == "d" = imprimirTxt "src/Interface/textosDeExibicao/detalhamentoJogo.txt"
+    | opcao == "m" = imprimirTxt "src/Interface/textosDeExibicao/modoDeJogo.txt"
     | opcao == "r" = mostrarRanking
     | opcao == "j" = putStr ""
     | otherwise = putStr ""
+
+escolheModoDeJogo :: IO Bool
+escolheModoDeJogo = do
+    imprimirTxt  "src/Interface/menus/escolherModoDeJogo.txt"
+    hFlush stdout
+    modo <- getLine
+    let modoMinuscula = unwords . words $ map toLower modo
+
+    case modoMinuscula of
+        "s" -> return True
+        "d" -> return False
+        _   -> do
+            putStrLn "\x2757 Opção inválida. Tente novamente."
+            escolheModoDeJogo
 
 jogadorNoFoco :: Tabuleiro -> String -> String -> Bool
 jogadorNoFoco tabuleiro foco jogador = 
