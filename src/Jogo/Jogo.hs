@@ -1,6 +1,6 @@
 module Jogo.Jogo (iniciarJogo) where
     
-import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabuleiro4x4, inicializarTabuleiro, movimentoValido, verificarJogadorTabuleiro, verificarVitoria, posicaoOcupada, selecionarTabuleiro)
+import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2,caveira,negado, exclamacao, tabuleiro4x4, modificarTabuleiro, movimentoValido, verificarJogadorTabuleiro, verificarVitoria, posicaoOcupada, selecionarTabuleiro)
 import Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu, jogadorNoFoco, escolheModoDeJogo, exibeFoco)
 import Jogo.MovimentarPeca (movimentarPeca)
 import Jogo.ViagemTempo(defineViagem, posicaoLivre, viagem)
@@ -13,22 +13,23 @@ import Utils.Ranking (atualizarRanking, mostrarRanking)
 import Data.Char (toLower)
 import System.Exit (exitSuccess)
 
+
+-- Exibe o tabuleiro
 iniciarJogo :: IO ()
 iniciarJogo = do
     imprimirTxt "src/Interface/textosDeExibicao/exterminadorDoFuturo.txt"
     iniciarTabuleiro
 
+-- Registra os nomes dos jogadores 
 registrarJogadores :: IO ((String, String), (String, String))
 registrarJogadores = do
     putStrLn "\nRegistro dos jogadores!"
-
     putStr "Jogador 1, digite seu nome: "
     hFlush stdout
     nome1 <- getLine
     let nome1Min = removerEspacos nome1  -- Remove todos os espaços e converte para minúsculo
     let jog1 = jogador1
     putStrLn ("Seu personagem será a " ++ jogador1)
-
     putStr "Jogador 2, digite seu nome: "
     hFlush stdout
     nome2 <- getLine
@@ -38,9 +39,7 @@ registrarJogadores = do
 
     return ((nome1Min, jog1), (nome2Min, jog2))
 
-removerEspacos :: String -> String
-removerEspacos = filter (/= ' ') . map toLower
-
+-- Registra o nome do jogador que jogará contra o bot
 registrarJogadorUnico :: IO (String, String)
 registrarJogadorUnico = do
     putStrLn "\nRegistro do jogador!"
@@ -53,10 +52,15 @@ registrarJogadorUnico = do
 
     return (nomeMin, jogador)
 
+-- Converte para minúsculo e remove os espaços em branco
+removerEspacos :: String -> String
+removerEspacos = filter (/= ' ') . map toLower
+
+
 iniciarTabuleiro :: IO () 
 iniciarTabuleiro = do
-    let tabuleiro1 = inicializarTabuleiro tabuleiro4x4 0 0 jogador1
-    let tabuleiro = inicializarTabuleiro tabuleiro1 3 3 jogador2
+    let tabuleiro1 = modificarTabuleiro tabuleiro4x4 0 0 jogador1 -- coloca o jogador 1 na posição 00
+    let tabuleiro = modificarTabuleiro tabuleiro1 3 3 jogador2 -- coloca o jogador 2 na posição 33
 
     let tabuleiroPassado = tabuleiro
     let tabuleiroPresente = tabuleiro
@@ -67,20 +71,17 @@ iniciarTabuleiro = do
 
     if opcaoMenu == "j" then do
         bot <- escolheModoDeJogo
-        if not bot then do
+        if not bot then do -- se não for jogar contra o bot 
             ((nome1, jog1), (nome2, jog2)) <- registrarJogadores
-            --let (tabuleiroPassado, tabuleiroPresente, tabuleiroFuturo) = inicioTab jog1 jog2
             rodadaJogador tabuleiroPassado tabuleiroPresente tabuleiroFuturo jog1 nome1 nome1 jog1 nome2 jog2 "passado" "futuro" 0 0 bot
         else do
             (nome1, jog1) <- registrarJogadorUnico
             let nome2 = "bot"
             let jog2 = jogador2 
-            --let (tabuleiroPassado, tabuleiroPresente, tabuleiroFuturo) = inicioTab jog1 jog2
             rodadaJogador tabuleiroPassado tabuleiroPresente tabuleiroFuturo jog1 nome1 nome1 jog1 nome2 jog2 "passado" "futuro" 0 0 bot
     else if opcaoMenu == "s" then exitSuccess
     else do 
         iniciarTabuleiro
-
 
 rodadaJogador :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String-> String -> String -> String -> String -> String -> String -> Int -> Int -> Bool -> IO()
 rodadaJogador tPassado tPresente tFuturo jogadorAtual nomeAtual nome1 jog1 nome2 jog2 focoJogador1 focoJogador2 clonesJogador1 clonesJogador2 bot = do
@@ -163,15 +164,14 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
         then if ehBot jogadorAtual bot
             then do
                 focoBot <- escolherFocoBot tPassado tPresente tFuturo jogadorAtual foco
-                putStrLn $ "\x2757 O jogador não foi encontrado no tabuleiro, o bot escolheu o novo foco: " ++ focoBot ++ "\n"
+                putStrLn $ (exclamacao ++" O jogador não foi encontrado no tabuleiro, o bot escolheu o novo foco: " ++ focoBot ++ "\n")
                 return (focoBot, selecionarTabuleiro focoBot tPassado tPresente tFuturo)
 
             else do
-                putStrLn "\x2757 O jogador não foi encontrado no tabuleiro, escolha o foco novamente:"
+                putStrLn (exclamacao ++ " O jogador não foi encontrado no tabuleiro, escolha o foco novamente:")
                 focoJogador <- definirFoco "src/Interface/menus/foco.txt" tPassado tPresente tFuturo jogadorAtual foco
                 return (focoJogador, selecionarTabuleiro focoJogador tPassado tPresente tFuturo)
         else return (foco, tabuleiroSelecionado)
-
 
 
     if verificarJogadorTabuleiro jogadorAtual novoTabuleiroSelecionado
@@ -194,7 +194,6 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
                     putStrLn $ "A jogada escolhida pelo bot foi: " ++ jogadaBot ++ "\n"
                     return jogadaBot
                 else escolherJogada
-
 
 
             -- Se a jogada for "v" (viagem no tempo), definir o destino da viagem
@@ -236,23 +235,27 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
                     (linhaDestino, colunaDestino) <- if ehBot jogadorAtual bot
                         then do
                             (linhaDestinoBot, colunaDestinoBot) <- escolherDestinoBot novoTabuleiroSelecionado (linhaOrigem, colunaOrigem) jogadorAtual
-                            threadDelay (2 * 1000000)
+                            threadDelay (2 * 1000000) -- delay de 2 segundos
                             putStrLn $ "Destino escolhido pelo bot: " ++ show (linhaDestinoBot + 1, colunaDestinoBot + 1)
                             return (linhaDestinoBot, colunaDestinoBot)
+                            -- solicita ao jogador que escolha 
                         else obterJogadaDestino "src/Interface/menus/movimento.txt" linhaOrigem colunaOrigem jogadorAtual
 
+                    -- valida se o movimento escolhido é permitido
                     if movimentoValido novoTabuleiroSelecionado (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino)
                         then do
+                            -- chama movimentar peça
                             (novoTPassado, novoTPresente, novoTFuturo, jogadorMorreu) <- 
                                 movimentarPeca novoTabuleiroSelecionado tPassado tPresente tFuturo jogadorAtual novoFoco linhaOrigem colunaOrigem linhaDestino colunaDestino
                             if jogadorMorreu
                                 then do
-                                    putStrLn "Jogador morreu ao entrar na planta! \x1F480"
-                                    return (novoTPassado, novoTPresente, novoTFuturo, jogadorAtual, clones)
+                                    putStrLn ("Jogador morreu ao entrar na planta! " ++ caveira)
+                                    -- tabuleiro sem o jogador morto
+                                    return (novoTPassado, novoTPresente, novoTFuturo, jogadorAtual, clones) 
                                 else
                                     return (novoTPassado, novoTPresente, novoTFuturo, novoFoco, clones)
                         else do
-                            putStrLn "\x274C Movimento inválido! Você só pode se mover uma casa na horizontal ou vertical."
+                            putStrLn (negado ++ " Movimento inválido! Você só pode se mover uma casa na horizontal ou vertical.")
                             jogar tPassado tPresente tFuturo jogadorAtual nomeAtual novoFoco clones bot
 
                 "p" -> do
@@ -270,15 +273,15 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
                                 plantarSemente novoTabuleiroSelecionado tPassado tPresente tFuturo novoFoco linhaDestino colunaDestino
                             return (novoTPassado, novoTPresente, novoTFuturo, novoFoco, clones)
                         else do
-                            putStrLn "\x274C Local inválido! local já está ocupado"
+                            putStrLn (negado ++ " Local inválido! local já está ocupado")
                             jogar tPassado tPresente tFuturo jogadorAtual nomeAtual novoFoco clones bot
 
                 _ -> do
-                    putStrLn "\x274C Opção inválida!"
+                    putStrLn (negado ++ " Opção inválida!")
                     jogar tPassado tPresente tFuturo jogadorAtual nomeAtual novoFoco clones bot
 
         else do
-            putStrLn "\x2757 Erro: Jogador não encontrado!"
+            putStrLn (exclamacao ++ " Erro: Jogador não encontrado!")
             jogar tPassado tPresente tFuturo jogadorAtual nomeAtual novoFoco clones bot
 
 -- Exibe mensagem de fim de jogo
@@ -290,5 +293,6 @@ finalizarJogo jogadorVencedor nomeVencedor nomePerdedor = do
     mostrarRanking
     iniciarTabuleiro  -- Reinicia o jogo
 
+-- Verifica se o jogador é bot ou não
 ehBot :: String -> Bool -> Bool
 ehBot jogadorAtual bot = jogadorAtual == jogador2 && bot
