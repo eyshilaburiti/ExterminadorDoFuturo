@@ -3,10 +3,10 @@ module Jogo.MovimentarPeca (movimentarPeca) where
 import Jogo.Tabuleiro (Tabuleiro, movimentoValido, empurrarJogador, modificarTabuleiro, semente, obtemCelula, arbusto, espacoVazio)
 import Jogo.ControladorPlantas (removerSemente)
 
--- Retorna uma ação IO que produz 3 tabuleiros atualizados e um Bool indicando se o jogador morreu.
+-- Retorna uma ação IO que produz 3 tabuleiros atualizados e um Bool indicando se o jogador morreu
 movimentarPeca :: Tabuleiro -> Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> Int -> Int -> Int -> Int -> IO (Tabuleiro, Tabuleiro, Tabuleiro, Bool)
 movimentarPeca tabuleiroSelecionado tPassado tPresente tFuturo jogadorAtual foco linhaOrigem colunaOrigem linhaDestino colunaDestino =
-    let ocupante = obtemCelula tabuleiroSelecionado linhaDestino colunaDestino -- obtém quem está na posição de destino.
+    let ocupante = obtemCelula tabuleiroSelecionado linhaDestino colunaDestino -- obtém quem está na posição de destino
     in if movimentoValido tabuleiroSelecionado (linhaOrigem, colunaOrigem) (linhaDestino, colunaDestino)
         then do
             -- Tratamento da semente
