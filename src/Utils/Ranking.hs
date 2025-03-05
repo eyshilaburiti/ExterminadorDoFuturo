@@ -27,12 +27,15 @@ lerRanking = do
         else do
             conteudo <- withFile rankingFile ReadMode $ \handle -> do
                 c <- hGetContents handle
-                evaluate (length c)  -- Garante que o conteúdo seja lido antes do handle ser fechado
+                _ <- evaluate (length c)  -- Garante que o conteúdo seja lido antes do handle ser fechado
                 return c
             return $ map lerLinha (lines conteudo) -- Converte cada linha do arquivo em uma tupla (jogador, pontos)
   where
     -- Divide a linha em palavras, pegando o nome e convertendo os pontos para Int
-    lerLinha linha = let (nome:pontos:_) = words linha in (nome, read pontos)
+    --lerLinha linha = let (nome:pontos:_) = words linha in (nome, read pontos)
+    lerLinha linha = case words linha of
+        (nome:pontos:_) -> (nome, read pontos)  -- Linha válida
+        _               -> ("", 0)  -- Linha inválida (sem nome ou pontos)
 
 -- Atualiza o ranking adicionando 1 ponto ao vencedor e registrando o perdedor com 0 (se ainda não existir)
 atualizarRanking :: String -> String -> IO ()
@@ -66,7 +69,8 @@ mostrarRanking :: IO ()
 mostrarRanking = do
     ranking <- lerRanking
     let rankingOrdenado = sortOn (Down . snd) ranking
-    let maxPontos = if null rankingOrdenado then 0 else snd (head rankingOrdenado)
+    --let maxPontos = if null rankingOrdenado then 0 else snd (head rankingOrdenado)
+    let maxPontos = if null rankingOrdenado then 0 else snd (rankingOrdenado !! 0)
     putStrLn "\nRanking de Jogadores:"
     mapM_ (\(nome, pontos) -> do
         let trofeu = if pontos == maxPontos then "🏆 " else ""
