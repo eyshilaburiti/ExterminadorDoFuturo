@@ -4,10 +4,10 @@ Projeto desenvolvido com foco na programação funcional, utilizando Haskell, pa
 
 <img src=".github/layout.png" alt="Visual do projeto" width="100%">
 
-## Descrição 
+## 🎮 Descrição 
 Trata-se da implementação funcional de um jogo de tabuleiro interativo em terminal, baseado no board game *That Time You Killed Me*, em que dois jogadores disputam pelo reconhecimento da criação da máquina do tempo.
 
-## Executar o projeto
+## ⚙️ Executar o projeto
 1. Instale e assegure-se de que o stack está funcionando em sua máquina
 - [Guia de instalação do stack](https://docs.haskellstack.org/en/stable/)
 2. Clone este repositório em sua máquina
@@ -26,7 +26,7 @@ stack build
 ```
 stack run
 ```
-## Regras do Jogo
+## 🔍 Regras do Jogo
 O jogo começa com a junção de 3 tabuleiros (como está representado na imagem acima), representando, da esquerda para direita, os tempos passado, presente e futuro. O jogador da peça branca, primeiro a jogar, começa no tabuleiro do passado e o jogador da peça preta, começa no tabuleiro do futuro. Eles irão batalhar entre si, com a finalidade de extinguir todas peças do seu oponente em, no mínimo, 2 tabuleiros. 
 
 As seguintes ações (2 ações para cada jogador por rodada) são permitidas:
@@ -40,7 +40,7 @@ Durante o jogo, o jogador pode eliminar o seu adversário através dos seguintes
 - Empurrar uma árvore para a casa em que o seu oponente está;
 - Paradoxo: empurrar uma das duas peças do seu oponente que estão em casas adjacentes, matando-as.
 
-## Equipe
+## 🤝 Equipe
 - [Ana Paula Berto](https://github.com/anapaulab3rto)
 - [Bruna Letícia](https://github.com/brunaletsleticia)
 - [Eyshila Buriti](https://github.com/eyshilaburiti)
