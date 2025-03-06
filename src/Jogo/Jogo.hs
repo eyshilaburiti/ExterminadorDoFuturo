@@ -1,18 +1,17 @@
 module Jogo.Jogo (iniciarJogo) where
-    
-import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2,caveira,negado, exclamacao, tabuleiro4x4, modificarTabuleiro, movimentoValido, verificarJogadorTabuleiro, verificarVitoria, posicaoOcupada, selecionarTabuleiro)
+
+import Data.Char (toLower)
+import System.IO (hFlush, stdout)
+import System.Exit (exitSuccess)
+import Control.Concurrent (threadDelay)
 import Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, escolherJogada, escolherOpcaoMenu, exibirOpcaoMenu, jogadorNoFoco, escolheModoDeJogo, exibeFoco)
+import Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2,caveira,negado, exclamacao, tabuleiro4x4, modificarTabuleiro, movimentoValido, verificarJogadorTabuleiro, verificarVitoria, posicaoOcupada, selecionarTabuleiro)
 import Jogo.MovimentarPeca (movimentarPeca)
 import Jogo.ViagemTempo(defineViagem, posicaoLivre, viagem)
 import Jogo.ControladorPlantas (plantarSemente)
 import Utils.ImprimirTxt (imprimirTxt)
-import System.IO (hFlush, stdout)
 import Utils.Bot (escolherJogadaBot, escolherTempoBot, escolherOrigemBot, escolherDestinoBot, escolherFocoBot)
-import Control.Concurrent (threadDelay)
 import Utils.Ranking (atualizarRanking, mostrarRanking)
-import Data.Char (toLower)
-import System.Exit (exitSuccess)
-
 
 -- Exibe o tabuleiro
 iniciarJogo :: IO ()
@@ -284,7 +283,7 @@ jogar tPassado tPresente tFuturo jogadorAtual nomeAtual foco clones bot = do
             putStrLn (exclamacao ++ " Erro: Jogador não encontrado!")
             jogar tPassado tPresente tFuturo jogadorAtual nomeAtual novoFoco clones bot
 
--- Exibe mensagem de fim de jogo
+-- Exibe mensagem de fim de jogo e o ranking atualizado
 finalizarJogo :: String -> String -> String -> IO ()
 finalizarJogo jogadorVencedor nomeVencedor nomePerdedor = do
     imprimirTxt "src/Interface/textosDeExibicao/fimDeJogo.txt"

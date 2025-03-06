@@ -24,7 +24,14 @@ Para executar o projeto, siga os seguintes passos:
     ```
     stack build
     ```
-5. Rode o projeto
+5. (Apenas para usuários Windows) Configurar o terminal para exibir caracteres Unicode corretamente
+
+   O jogo utiliza caracteres Unicode para representar algumas peças no tabuleiro. No entanto, o terminal do Windows pode não exibi-los corretamente. Para evitar esse problema, execute o seguinte comando antes de rodar o jogo:  
+    ```
+    chcp 65001
+    ```
+    Esse comando altera a página de código do terminal para UTF-8, garantindo a exibição correta dos caracteres.
+6. Rode o projeto
     ```
     stack run
     ```

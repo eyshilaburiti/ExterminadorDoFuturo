@@ -6,7 +6,7 @@ import Data.List (sortOn)
 import Data.Ord (Down(Down))
 import Control.Exception (evaluate)
 
--- Define para o ranking: uma lista de tuplas (nome do jogador, pontuação)
+-- Define que o ranking é uma lista de tuplas (nome do jogador, pontuação)
 type Ranking = [(String, Int)]
 
 -- Caminho do arquivo onde o ranking será salvo
@@ -27,15 +27,15 @@ lerRanking = do
         else do
             conteudo <- withFile rankingFile ReadMode $ \handle -> do
                 c <- hGetContents handle
-                _ <- evaluate (length c)  -- Garante que o conteúdo seja lido antes do handle ser fechado
+                _ <- evaluate (length c)
                 return c
-            return $ map lerLinha (lines conteudo) -- Converte cada linha do arquivo em uma tupla (jogador, pontos)
+            -- Converte cada linha do arquivo em uma tupla (jogador, pontos)
+            return $ map lerLinha (lines conteudo)
   where
     -- Divide a linha em palavras, pegando o nome e convertendo os pontos para Int
-    --lerLinha linha = let (nome:pontos:_) = words linha in (nome, read pontos)
     lerLinha linha = case words linha of
-        (nome:pontos:_) -> (nome, read pontos)  -- Linha válida
-        _               -> ("", 0)  -- Linha inválida (sem nome ou pontos)
+        (nome:pontos:_) -> (nome, read pontos)
+        _               -> ("", 0)
 
 -- Atualiza o ranking adicionando 1 ponto ao vencedor e registrando o perdedor com 0 (se ainda não existir)
 atualizarRanking :: String -> String -> IO ()
@@ -44,8 +44,10 @@ atualizarRanking jogadorVencedor jogadorPerdedor = do
     let rankingComPerdedor = if jogadorPerdedor `elem` map fst ranking
                                 then ranking
                                 else (jogadorPerdedor, 0) : ranking
+    -- Atualiza a pontuação do vencedor
     let rankingAtualizado = atualizarPontuacao jogadorVencedor 1 rankingComPerdedor
-    let rankingOrdenado = sortOn (Down . snd) rankingAtualizado  -- Ordena por pontuação decrescente
+    -- Ordena o ranking em ordem decrescente de pontuação
+    let rankingOrdenado = sortOn (Down . snd) rankingAtualizado
 
     -- Escreve os dados no arquivo temporário
     withFile tempFile WriteMode $ \handle -> do
@@ -61,15 +63,14 @@ atualizarRanking jogadorVencedor jogadorPerdedor = do
 atualizarPontuacao :: String -> Int -> Ranking -> Ranking
 atualizarPontuacao jogador pontos [] = [(jogador, pontos)]
 atualizarPontuacao jogador pontos ((nome, pts):resto)
-    | jogador == nome = (nome, pts + pontos) : resto
-    | otherwise = (nome, pts) : atualizarPontuacao jogador pontos resto
+    | jogador == nome = (nome, pts + pontos) : resto -- Soma pontos à pontuação atual
+    | otherwise = (nome, pts) : atualizarPontuacao jogador pontos resto -- Caso contrário, continua procurando
 
 -- Lê e imprime o ranking ordenado em ordem decrescente.
 mostrarRanking :: IO ()
 mostrarRanking = do
     ranking <- lerRanking
     let rankingOrdenado = sortOn (Down . snd) ranking
-    --let maxPontos = if null rankingOrdenado then 0 else snd (head rankingOrdenado)
     let maxPontos = if null rankingOrdenado then 0 else snd (rankingOrdenado !! 0)
     putStrLn "\nRanking de Jogadores:"
     mapM_ (\(nome, pontos) -> do
