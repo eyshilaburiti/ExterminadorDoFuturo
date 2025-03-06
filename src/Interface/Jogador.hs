@@ -4,7 +4,7 @@ import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
 import Utils.ImprimirTxt (imprimirTxt)
 import Utils.Ranking (mostrarRanking)
-import Jogo.Tabuleiro(jogadorNaPosicao, existeJogador, Tabuleiro)
+import Jogo.Tabuleiro(jogadorNaPosicao, existeJogador, Tabuleiro, negado, exclamacao)
 import Data.Char (toLower)
 
 escolherJogada :: IO String
@@ -22,7 +22,7 @@ escolherJogada = do
     else if escolhaMinuscula == "r" then do
         return escolhaMinuscula
     else do 
-        putStrLn "\x274C Entrada inválida!"
+        putStrLn (negado ++ " Entrada inválida!")
         escolherJogada  
 
 -- Solicitar jogada do jogador
@@ -35,7 +35,7 @@ obterJogadaOrigem mensagem jogador tabuleiro= do
     if jogadorNaPosicao tabuleiro linha coluna jogador then  
         return (linha, coluna)
     else do
-        putStrLn "\x274C Não existe nenhuma peça sua nessa posição do tabuleiro, escolha uma posição que já tenha uma peça sua"
+        putStrLn (negado ++ " Não existe nenhuma peça sua nessa posição do tabuleiro, escolha uma posição que já tenha uma peça sua")
         obterJogadaOrigem mensagem jogador tabuleiro
 
 obterJogadaDestino :: String -> Int -> Int -> String -> IO (Int, Int)
@@ -47,26 +47,26 @@ obterJogadaDestino caminhoArquivo linha coluna jogador = do
     let movMinuscula = unwords . words $ map toLower movimento 
     if movMinuscula == "w" then
         if linha == 0 then do
-            putStrLn "\x274C Movimento inválido"
+            putStrLn (negado ++ " Movimento inválido")
             obterJogadaDestino caminhoArquivo linha coluna jogador
         else return (linha - 1, coluna)
     else if movMinuscula == "s" then
         if linha == 3 then do
-            putStrLn "\x274C Movimento inválido"
+            putStrLn (negado ++ " Movimento inválido")
             obterJogadaDestino caminhoArquivo linha coluna jogador
         else return (linha + 1, coluna)
     else if movMinuscula == "a" then
         if coluna == 0 then do
-            putStrLn "\x274C Movimento inválido"
+            putStrLn (negado ++ " Movimento inválido")
             obterJogadaDestino caminhoArquivo linha coluna jogador
         else return (linha, coluna - 1)
     else if movMinuscula == "d" then
         if coluna == 3 then do
-            putStrLn "\x274C Movimento inválido"
+            putStrLn (negado ++ " Movimento inválido")
             obterJogadaDestino caminhoArquivo linha coluna jogador
         else return (linha, coluna + 1)
     else do
-        putStrLn "\x274C Comando inválido"
+        putStrLn (negado ++ " Comando inválido")
         obterJogadaDestino caminhoArquivo linha coluna jogador
 
 -- Função para obter um número válido dentro de um intervalo específico
@@ -80,10 +80,10 @@ obterPosicao mensagem = do
             if n > 0 && n <= 4
                 then return (n - 1)
             else do
-                putStrLn "\x274C Posição inválida! Tente novamente."
+                putStrLn (negado ++ " Posição inválida! Tente novamente.")
                 obterPosicao mensagem
         Nothing -> do
-            putStrLn "\x274C Entrada inválida!"
+            putStrLn (negado ++ " Entrada inválida!")
             obterPosicao mensagem
 
 -- Função que define o foco do jogador
@@ -122,7 +122,7 @@ definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jo
                     definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
 
         _ -> do
-            putStrLn "\x274C Opção Inválida"
+            putStrLn (negado ++ " Opção Inválida")
             definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
 
 exibeFoco :: String -> IO ()
@@ -149,7 +149,7 @@ escolherOpcaoMenu = do
     else if escolhaMinuscula == "s" then do
         return escolhaMinuscula
     else do 
-        putStrLn "\x274C Entrada inválida!"
+        putStrLn (negado ++ " Entrada inválida!")
         escolherOpcaoMenu
 
 exibirOpcaoMenu :: String -> IO ()
@@ -171,7 +171,7 @@ escolheModoDeJogo = do
         "s" -> return True
         "d" -> return False
         _   -> do
-            putStrLn "\x2757 Opção inválida. Tente novamente."
+            putStrLn (exclamacao ++ " Opção inválida. Tente novamente.")
             escolheModoDeJogo
 
 jogadorNoFoco :: Tabuleiro -> String -> String -> Bool
