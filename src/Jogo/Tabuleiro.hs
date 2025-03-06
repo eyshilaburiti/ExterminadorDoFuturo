@@ -39,16 +39,8 @@ exclamacao :: String
 exclamacao = "\x2757"
 
 -- Função para formatar o tabuleiro como uma String 
--- Stefane: Atualização na função, removi os delimitadores laterais 
 formatarTabuleiro :: Tabuleiro -> [String]
 formatarTabuleiro tabuleiro = map (\linha -> "|" ++ unwords linha ++ "|") tabuleiro
---formatarTabuleiro tabuleiro = 
-    --let tamanho = length tabuleiro
-    -- definindo as bordas
-        --bordaSuperior = replicate (tamanho * 2 + 1) '_'  
-        --bordaInferior = replicate (tamanho * 2 + 1) '¯' 
-        --bordaLateral = map (\linha -> "|" ++ unwords linha ++ "|") tabuleiro
-    --in bordaSuperior : bordaLateral ++ [bordaInferior]-- juntando as bordas
 
 -- Função para imprimir os 3 tabuleiros
 imprimirTabuleiros :: Tabuleiro -> Tabuleiro -> Tabuleiro -> IO ()
@@ -251,5 +243,3 @@ selecionarTabuleiro "passado" tPassado _ _ = tPassado
 selecionarTabuleiro "presente" _ tPresente _ = tPresente
 selecionarTabuleiro "futuro" _ _ tFuturo = tFuturo
 selecionarTabuleiro _ _ _ _ = error "Tempo inválido: escolha entre 'passado', 'presente' ou 'futuro'."
-
-
