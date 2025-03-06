@@ -108,11 +108,6 @@ plantaCerta tabuleiro linha coluna planta =
     let valor = (tabuleiro !! linha) !! coluna
     in valor == planta
 
-temPlanta :: Tabuleiro -> Int -> Int -> Bool
-temPlanta tabuleiro linha coluna = 
-    let valor = (tabuleiro !! linha) !! coluna
-    in valor `elem` [semente, arbusto, arvore]
-
 verificarJogadorTabuleiro :: String -> Tabuleiro -> Bool
 verificarJogadorTabuleiro jogador tabuleiro =
     any (any (== jogador)) tabuleiro
