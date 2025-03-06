@@ -8,7 +8,7 @@ where
 type Tabuleiro = [[String]]
 
 tabuleiro4x4 :: Tabuleiro
-tabuleiro4x4 = replicate 4 (replicate 4 espacoVazio) -- repetindo o símbolo do quadrado vazio ☐
+tabuleiro4x4 = replicate 4 (replicate 4 espacoVazio) -- repetindo o símbolo do quadrado vazio 
 
 -- Definindo os emojis dos jogadores
 espacoVazio :: String
