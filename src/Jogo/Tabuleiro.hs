@@ -1,7 +1,7 @@
 module Jogo.Tabuleiro (Tabuleiro, imprimirTabuleiros, jogador1, jogador2, tabuleiro4x4, movimentoValido, verificarJogadorTabuleiro, verificarVitoria, posicaoOcupada,
 selecionarTabuleiro, jogadorNaPosicao, existeJogador, obtemCelula, arbusto, arvore, espacoVazio, caveira, exclamacao, negado, 
 novaPosicaoEmpurrado, atualizarTabuleiroViagem, atualizarTabuleiro, empurrarJogador, modificarTabuleiro, 
-semente, removerSementeNoTabuleiro, plantarSementeNoTabuleiro, temPlanta)
+semente, removerSementeNoTabuleiro, plantarSementeNoTabuleiro, plantaCerta)
 where
 
 -- Criando o tabuleiro 

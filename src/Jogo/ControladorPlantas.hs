@@ -1,15 +1,15 @@
 module Jogo.ControladorPlantas (plantarSemente, removerSemente) where
 
-import Jogo.Tabuleiro (Tabuleiro, plantarSementeNoTabuleiro,removerSementeNoTabuleiro, semente, arbusto, arvore, espacoVazio, temPlanta, modificarTabuleiro)
+import Jogo.Tabuleiro (Tabuleiro, plantarSementeNoTabuleiro,removerSementeNoTabuleiro, semente, arbusto, arvore, espacoVazio, plantaCerta, modificarTabuleiro)
 
 -- Função para plantar semente no tabuleiro
 plantarSemente :: Tabuleiro -> Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> Int -> Int -> IO (Tabuleiro, Tabuleiro, Tabuleiro)
 plantarSemente tabuleiroSelecionado tPassado tPresente tFuturo foco linha coluna = do
     if (foco == "passado") then do
         let novoTabuleiro = plantarSementeNoTabuleiro tabuleiroSelecionado linha coluna semente
-        if(temPlanta novoTabuleiro linha coluna) then do 
+        if(plantaCerta novoTabuleiro linha coluna semente) then do 
             let novoTabuleiroPresente = plantarSementeNoTabuleiro tPresente linha coluna arbusto
-            if(temPlanta novoTabuleiroPresente linha coluna) then do
+            if(plantaCerta novoTabuleiroPresente linha coluna arbusto) then do
                 let novoTabuleiroFuturo = plantarSementeNoTabuleiro tFuturo linha coluna arvore
                 return (novoTabuleiro, novoTabuleiroPresente, novoTabuleiroFuturo)
             else return (novoTabuleiro, novoTabuleiroPresente, tFuturo)
@@ -17,7 +17,7 @@ plantarSemente tabuleiroSelecionado tPassado tPresente tFuturo foco linha coluna
 
     else if (foco == "presente") then do 
         let novoTabuleiro = plantarSementeNoTabuleiro tabuleiroSelecionado linha coluna semente
-        if (temPlanta novoTabuleiro linha coluna) then do
+        if (plantaCerta novoTabuleiro linha coluna semente) then do
             let novoTabuleiroFuturo = plantarSementeNoTabuleiro tFuturo linha coluna arbusto
             return (tPassado, novoTabuleiro, novoTabuleiroFuturo)
         else return (tPassado, novoTabuleiro, tFuturo)
