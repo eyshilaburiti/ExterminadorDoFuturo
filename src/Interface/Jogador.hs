@@ -2,11 +2,12 @@ module Interface.Jogador (obterJogadaOrigem, obterJogadaDestino, definirFoco, es
 
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
+import Data.Char (toLower)
 import Utils.ImprimirTxt (imprimirTxt)
 import Utils.Ranking (mostrarRanking)
 import Jogo.Tabuleiro(jogadorNaPosicao, existeJogador, Tabuleiro, negado, exclamacao)
-import Data.Char (toLower)
 
+-- Exibe o menu de jogadas e captura do jogador uma opção válida
 escolherJogada :: IO String
 escolherJogada = do 
     imprimirTxt "src/Interface/menus/jogadas.txt"
@@ -38,6 +39,7 @@ obterJogadaOrigem mensagem jogador tabuleiro= do
         putStrLn (negado ++ " Não existe nenhuma peça sua nessa posição do tabuleiro, escolha uma posição que já tenha uma peça sua")
         obterJogadaOrigem mensagem jogador tabuleiro
 
+-- Captura o movimento que o jogador deseja realizar
 obterJogadaDestino :: String -> Int -> Int -> String -> IO (Int, Int)
 obterJogadaDestino caminhoArquivo linha coluna jogador = do
     imprimirTxt caminhoArquivo
@@ -125,6 +127,7 @@ definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jo
             putStrLn (negado ++ " Opção Inválida")
             definirFoco caminhoArquivo tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador focoAnterior
 
+-- Identifica o foco atual de um jogador por meio de uma seta
 exibeFoco :: String -> IO ()
 exibeFoco foco
     | foco == "passado" = imprimirTxt "src/Interface/textosDeExibicao/passado.txt"
@@ -132,6 +135,7 @@ exibeFoco foco
     | foco == "futuro" = imprimirTxt "src/Interface/textosDeExibicao/futuro.txt"
     | otherwise = putStr ""
 
+-- Exibe o menu inicial e captura uma opção válida
 escolherOpcaoMenu :: IO String
 escolherOpcaoMenu = do 
     imprimirTxt "src/Interface/menus/menu.txt"
@@ -152,6 +156,7 @@ escolherOpcaoMenu = do
         putStrLn (negado ++ " Entrada inválida!")
         escolherOpcaoMenu
 
+-- Exibe informações específicas com base na opção escolhida pelo jogador no menu
 exibirOpcaoMenu :: String -> IO ()
 exibirOpcaoMenu opcao
     | opcao == "d" = imprimirTxt "src/Interface/textosDeExibicao/detalhamentoJogo.txt"
@@ -160,6 +165,7 @@ exibirOpcaoMenu opcao
     | opcao == "j" = putStr ""
     | otherwise = putStr ""
 
+-- Exibe os modos de jogo disponíveis e captura uma opção válida
 escolheModoDeJogo :: IO Bool
 escolheModoDeJogo = do
     imprimirTxt  "src/Interface/menus/escolherModoDeJogo.txt"
@@ -174,6 +180,7 @@ escolheModoDeJogo = do
             putStrLn (exclamacao ++ " Opção inválida. Tente novamente.")
             escolheModoDeJogo
 
+-- Verifica se o jogador está presente no foco
 jogadorNoFoco :: Tabuleiro -> String -> String -> Bool
 jogadorNoFoco tabuleiro foco jogador = 
     if foco `elem` ["passado", "presente", "futuro"]

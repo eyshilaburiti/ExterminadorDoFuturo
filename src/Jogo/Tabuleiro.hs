@@ -217,13 +217,13 @@ empurraoNormal tabuleiro (linhaEmpurrador, colunaEmpurrador) (linhaEmpurrado, co
     in modificarTabuleiro tabuleiroAtualizado linhaEmpurrador colunaEmpurrador espacoVazio
         
 
---verifica se o jogador inserido está presente na coordenada de origem inserida
+-- Verifica se o jogador inserido está presente na coordenada de origem inserida
 jogadorNaPosicao :: Tabuleiro -> Int -> Int -> String-> Bool
 jogadorNaPosicao tabuleiro linha coluna jogador = 
     let valor = (tabuleiro !! linha) !! coluna
     in valor == jogador
 
--- Verifica vitória
+-- Verifica vitória a partir da contagem de ocorrência de um jogador em cada tabuleiro
 verificarVitoria :: Tabuleiro -> Tabuleiro -> Tabuleiro -> String -> String -> String -> String -> (Bool, String, String)
 verificarVitoria tabuleiroPassado tabuleiroPresente tabuleiroFuturo jogador1' nome1 jogador2' nome2 
     | ((existeJogador tabuleiroPassado jogador1') + (existeJogador tabuleiroPresente jogador1') + (existeJogador tabuleiroFuturo jogador1')) == 1 
